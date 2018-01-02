@@ -1,0 +1,84 @@
+---
+
+- name: insert Hostnames
+  template:
+    src: roles/docker/templates/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure the Hostname is set
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Ensure swap is disabled
+  command: swapoff -a
+
+- name: Ensure depdencies are installed
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Add Docker apt key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
+  register: add_repository_key
+  ignore_errors: true
+
+- name: Add Docker Key
+  apt_repository:
+    repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable'
+    filename: docker
+    state: present
+
+- name: apt-get clean
+  command: apt-get clean
+
+- name: apt-get update
+  command: apt-get update
+
+- name: Installing docker...
+  apt:
+    name: docker-ce=17.03.2~ce-0~ubuntu-xenial
+
+- name: add Docker systemd file
+  template:
+    src: roles/docker/templates/docker.service.j2
+    dest: /lib/systemd/system/docker.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure systemd is reloaded
+  systemd: daemon_reload=yes
+
+- name: Ensure Docker is started
+  systemd: 
+    name: docker.service
+    state: started
+    enabled: yes
+
+- name: Ensure to use cgroups & metrics
+  template:
+    src: roles/docker/templates/daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Restarting Docker...
+  systemd:
+    name: docker.service
+    state: restarted
+    daemon_reload: yes
+
+
+    
+    
+

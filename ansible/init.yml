@@ -1,0 +1,18 @@
+- hosts: localhost
+  become: yes
+  become_method: sudo
+  vars_files:
+  - "inventories/dev/group_vars/all" 
+  vars:
+    hostname: "{{ ansible_hostname }}"
+    ip: "{{ ansible_enp0s8.ipv4.address }}"
+  tasks:
+  - name: hosts yo!
+    template:
+      src: roles/docker/templates/hosts.j2
+      dest: /etc/hosts
+      owner: root
+      group: root
+      mode: 0644
+  roles:
+  - users

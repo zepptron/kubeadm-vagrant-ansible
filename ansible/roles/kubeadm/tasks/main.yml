@@ -1,0 +1,71 @@
+---
+
+- name: Ensure depdencies are installed
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Add Google GPG key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  register: add_repository_key
+  ignore_errors: true
+
+- name: Ensure Kubernetes repo is available
+  apt_repository:
+    repo: 'deb http://apt.kubernetes.io/ kubernetes-xenial main'
+    filename: kubernetes
+    state: present
+
+- name: apt-get clean
+  command: apt-get clean
+
+- name: apt-get update
+  command: apt-get update
+
+- name: Installing Kubelets and Kubeadm
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - kubelet
+    - kubeadm
+
+- name: Installing Kubectl on Master Node
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - kubectl
+  when: inventory_hostname in groups['master']
+
+- name: Ensure Kubelet Unitfile is setup with cgroup defined
+  template:
+    src: roles/kubeadm/templates/kubeadm.conf.j2
+    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure systemd is reloaded
+  systemd: daemon_reload=yes
+
+- name: Ensure kubelet has restarted
+  systemd:
+    state: restarted
+    name: kubelet
+
+- name: Ensure to pass bridged IPv4 traffic to iptables chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+
+# kubeadm init --pod-network-cidr=10.244.0.0/16

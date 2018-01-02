@@ -1,0 +1,11 @@
+---
+
+- hosts: cluster
+  become: yes
+  become_method: sudo
+  gather_facts: False
+
+  roles:
+    - users
+    - docker
+    - kubeadm
