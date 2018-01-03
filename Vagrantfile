@@ -1,7 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$proxy = false
+$proxy = false	# true or false
+$proxy_url = "http://proxy.fhm.de:8080"	# enter proxy URL here!
 
 Vagrant.configure("2") do |config|
 	
@@ -10,20 +11,34 @@ Vagrant.configure("2") do |config|
 	config.vm.provision :shell, path: "prov/prepare.sh"
 	config.vm.box = "ubuntu/xenial64"
 	config.vm.synced_folder ".", "/vagrant"
-	# global proxy settings
-	file_name = "ansible/inventories/dev/group_vars/all"
+	# proxy settings...
+	global = "ansible/inventories/dev/group_vars/all"
+	bashrc = "prov/configs/bashrc"
+	$proxy_exp = "export {http,https,ftp}_proxy='#{$proxy_url}'"
+	global_proxy_off = "proxy: false\nproxy_url: '#{$proxy_url}'"
+	global_proxy_on = "proxy: true\nproxy_url: '#{$proxy_url}'"
 	if $proxy == true
-		config.vm.provision :shell, inline: "cp -rf /vagrant/prov/configs/proxy/bashrc /root/.bashrc && source /root/.bashrc"
-		text = File.read(file_name)
-		new_contents = text.gsub("proxy: false", "proxy: true")
-		File.open(file_name, "w") {
-			|file| file.puts new_contents 
+		readg = File.read(global)
+		glob_search = readg.gsub(global_proxy_off, global_proxy_on)
+		File.open(global, "w") {
+			|file| file.puts glob_search 
 		}
+		readb = File.read(bashrc)
+		bash_search = readb.gsub(/(#|)\sexport.*/, " #{$proxy_exp}")
+		File.open(bashrc, "w") {
+			|file| file.puts bash_search
+		}
+		config.vm.provision :shell, inline: "cp -rf /vagrant/prov/configs/bashrc /root/.bashrc && source /root/.bashrc"
 	else
-		text = File.read(file_name)
-		new_contents = text.gsub("proxy: true", "proxy: false")
-		File.open(file_name, "w") {
-			|file| file.puts new_contents 
+		readg = File.read(global)
+		glob_search = readg.gsub(global_proxy_on, global_proxy_off)
+		File.open(global, "w") {
+			|file| file.puts glob_search 
+		}
+		readb = File.read(bashrc)
+		bash_search = readb.gsub(/(#|)\sexport.*/, "# #{$proxy_exp}")
+		File.open(bashrc, "w") {
+			|file| file.puts bash_search
 		}
 	end
 	config.ssh.insert_key = false

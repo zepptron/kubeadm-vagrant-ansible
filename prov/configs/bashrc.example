@@ -2,34 +2,6 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-
-# User specific aliases and functions
-
-alias ll='ls -lah'
-
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
-reset=`tput sgr0`
-
-export http_proxy=http://XXXX:8000
-export https_proxy=http://XXXX:8000
-export ftp_proxy=http://XXXX:8000
-export no_proxy=http://XXXX:8000
-
-# Proxy Variables
-function pon() {
-    export {http,https,ftp}_proxy='http://XXXX:8000'
-    export no_proxy='XXX.de'
-    echo "\n${green}proxy on!\n${reset}"
-}
-
-function poff() {
-    unset {http,https,ftp,no}_proxy
-    echo "\n${red}proxy off!\n${reset}"
-}
-
-
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -109,3 +81,4 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# export {http,https,ftp}_proxy='USED_BY_VAGRANTFILE'

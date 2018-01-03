@@ -9,6 +9,6 @@ app_user: "zepp"
 app_group: "zepp"
 app_pw: "$6$ceYviEZw0in3j3Ii$eU7UpgAcLGsge71plDbxTxfoSlw7qqub4uC4SKt6vN5UCmX/bzGwVEWcbCoQK2nTEiNxmVqhUthxN6nERYTWG."
 
-# Proxy vars
-proxy_url: "http://proxy.fhm.de:8080"
+
 proxy: false
+proxy_url: 'http://proxy.fhm.de:8080'
