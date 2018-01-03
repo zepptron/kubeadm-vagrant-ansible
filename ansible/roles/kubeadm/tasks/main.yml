@@ -1,5 +1,13 @@
 ---
 
+- name: Ensure to pass bridged IPv4 traffic to iptables chains
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
 - name: Ensure depdencies are installed
   apt:
     name: "{{ item }}"
@@ -43,6 +51,9 @@
     - kubectl
   when: inventory_hostname in groups['master']
 
+- name: Ensure kubectl autocompletion is activated
+  shell: echo "source <(kubectl completion bash)" >> /root/.bashrc
+
 - name: Ensure Kubelet Unitfile is setup with cgroup defined
   template:
     src: roles/kubeadm/templates/kubeadm.conf.j2
@@ -59,13 +70,47 @@
     state: restarted
     name: kubelet
 
-- name: Ensure to pass bridged IPv4 traffic to iptables chains
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: 1
-    sysctl_set: yes
-    state: present
-    reload: yes
+- name: Ensure Kubernetes master is set to defaultvalues
+  shell: "kubeadm reset"
 
+- name: Init Kubernetes cluster
+  when: inventory_hostname in groups['master']
+  shell: kubeadm init --apiserver-advertise-address 10.10.0.10 --token {{ kube_token }}
 
-# kubeadm init --pod-network-cidr=10.244.0.0/16
+- name: Ensure to create the Kubernetes configdirectory for zepp
+  file: path=/home/zepp/.kube/ state=directory
+  when: inventory_hostname in groups['master']
+
+- name: Copy admin.conf to /home/zepp/.kube directory
+  when: inventory_hostname in groups['master']
+  copy:
+    src: "{{ kubectl_config }}"
+    dest: "/home/zepp/.kube/config"
+    owner: zepp
+    group: zepp
+    mode: 0744
+
+- name: Ensure to create the Kubernetes configdirectory for root
+  file: path=/root/.kube/ state=directory
+  when: inventory_hostname in groups['master']
+
+- name: Copy admin.conf to /root/.kube directory
+  when: inventory_hostname in groups['master']
+  copy:
+    src: "{{ kubectl_config }}"
+    dest: "/root/.kube/config"
+    owner: zepp
+    group: zepp
+    mode: 0744
+
+- name: Ensure Kubernetes nodes are set to defaultvalues
+  when: inventory_hostname in groups['nodes']
+  shell: "kubeadm reset"
+
+- name: Ensure nodes are connected to the Kubernetes API
+  when: inventory_hostname in groups['nodes']
+  shell: kubeadm join --token {{ kube_token }} 10.10.0.10:6443 --discovery-token-unsafe-skip-ca-verification
+
+- name: Start Flannel...
+  when: inventory_hostname in groups['master']
+  shell: "kubectl apply -f /vagrant/ansible/flannel.yml"
