@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$proxy = true
+$proxy = false
 
 Vagrant.configure("2") do |config|
 	
@@ -10,8 +10,21 @@ Vagrant.configure("2") do |config|
 	config.vm.provision :shell, path: "prov/prepare.sh"
 	config.vm.box = "ubuntu/xenial64"
 	config.vm.synced_folder ".", "/vagrant"
+	# global proxy settings
+	file_name = "ansible/inventories/dev/group_vars/all"
 	if $proxy == true
 		config.vm.provision :shell, inline: "cp -rf /vagrant/prov/configs/proxy/bashrc /root/.bashrc && source /root/.bashrc"
+		text = File.read(file_name)
+		new_contents = text.gsub("proxy: false", "proxy: true")
+		File.open(file_name, "w") {
+			|file| file.puts new_contents 
+		}
+	else
+		text = File.read(file_name)
+		new_contents = text.gsub("proxy: true", "proxy: false")
+		File.open(file_name, "w") {
+			|file| file.puts new_contents 
+		}
 	end
 	config.ssh.insert_key = false
 	config.vm.provision "shell", inline: <<-SHELL
