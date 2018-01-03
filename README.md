@@ -17,17 +17,17 @@ vagrant ssh kube-boss # "ubu" is the password by default
 sudo -i
 ansible-playbook -i /vagrant/ansible/inventories/dev/dev.ini /vagrant/ansible/install.yml
 ..
-kubeadm init --pod-network-cidr=10.244.0.0/16
+watch kubectl get nodes
 ```
 
 the kubernetes components will be installed like this:
 - kubectl on kube-boss
-- kubelet and kubeadm everywhere
+- kubelet and kubeadm everywhere (kube-boss, kube-1, kube-2, kube-3)
 
-todo:
+todos:
 - kill proxyfuckups while using kubeadm
-- repair userfuckup in vagrant: https://bugs.launchpad.net/cloud-images/+bug/1569237 
-- kubeadm init via ansible
-- install addons to have a nice and clean kubernetes cluster
+- repair userfuckup in vagrantbox: https://bugs.launchpad.net/cloud-images/+bug/1569237 
+- add some healthchecks
+- be much more generic!
 
 As you might have noticed, this is just the beginning. I'm trying to make it as generic as possible but I'm no ansible hero so this might take a while. The goal is to have the ability to run it on any relevant platform (ARM (Raspberry), x64 etc...). Long way to go from here :)
