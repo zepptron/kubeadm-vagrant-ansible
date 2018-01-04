@@ -13,13 +13,27 @@ ansible-playbook -i /vagrant/ansible/inventories/dev/dev.ini /vagrant/ansible/in
 watch kubectl get nodes
 ```
 
-the kubernetes components will be installed like this:
-- kubectl on kube-boss
-- kubelet and kubeadm everywhere (kube-boss, kube-1, kube-2, kube-3)
-
 <img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
 
-## Todos:
+## Protips
+There is this one user called "zepp" (default-pw: bitch) which is able to interact with kubernetes. You should use this one rather than always playing with root. There are also some sweet hacks in `.bashrc` like `k-nodes`, which will give you some stats about the cluster.
+
+<img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/k-node.jpg?raw=true" width="400">
+
+### Working fast
+the command `k` is your friend. It's the alias for `kubectl` because you will be angry when you always have to type _k u b e c t l_ ... followed by a namespace :)
+
+So if you want to work in a specific namespace and you are annoyed of always typing `kubectl -n kube-public get pods -o wide` just adjust the _.bashrc_ file to your needs! I've already covered the standard namespaces, you just have to type `k-pub` (kube-public), `k-sys` (kube-system) or `k-def` (default) to work in a specific namespace. So when everything is installed and you login as "zepp", try the following:
+
+```
+k-sys
+k get pods
+k-nodes
+```
+
+This also works for deploying stuff etc, it's just an alias.
+
+## Todos
 - kill proxyfuckups while using kubeadm
 - repair userfuckup in vagrantbox: https://bugs.launchpad.net/cloud-images/+bug/1569237 
 - add some healthchecks
