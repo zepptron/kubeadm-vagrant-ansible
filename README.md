@@ -24,6 +24,10 @@ the kubernetes components will be installed like this:
 - kubectl on kube-boss
 - kubelet and kubeadm everywhere (kube-boss, kube-1, kube-2, kube-3)
 
+<img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="1200">
+
+
+
 ## Todos:
 - kill proxyfuckups while using kubeadm
 - repair userfuckup in vagrantbox: https://bugs.launchpad.net/cloud-images/+bug/1569237 
