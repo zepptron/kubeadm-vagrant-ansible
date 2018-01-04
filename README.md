@@ -5,7 +5,7 @@ Install Vagrant on your machine. Then start your VMs with a simple "vagrant up",
 Run the following to enable hostnames, install docker and kubernetes components including flannel:
 
 ```
-vagrant ssh kube-boss # "ubu" is the password by default
+vagrant ssh kube-boss # "ubu" is the password by default, waiting for a fix here...
 ..
 sudo -i
 ansible-playbook -i /vagrant/ansible/inventories/dev/dev.ini /vagrant/ansible/install.yml
