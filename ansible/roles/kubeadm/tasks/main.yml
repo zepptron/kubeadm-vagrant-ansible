@@ -51,9 +51,15 @@
     - kubectl
   when: inventory_hostname in groups['master']
 
-- name: Ensure kubectl autocompletion is activated
-  shell: echo "source <(kubectl completion bash)" >> /root/.bashrc
-
+- name: Ensure to replace bashrc for zepp
+  when: inventory_hostname in groups['master']
+  copy:
+    src: /root/.bashrc
+    dest: /home/zepp/.bashrc
+    owner: zepp
+    group: zepp
+    mode: 0744
+    
 - name: Ensure Kubelet Unitfile is setup with cgroup defined
   template:
     src: roles/kubeadm/templates/kubeadm.conf.j2
@@ -114,3 +120,5 @@
 - name: Start Flannel...
   when: inventory_hostname in groups['master']
   shell: "kubectl apply -f /vagrant/ansible/flannel.yml"
+
+

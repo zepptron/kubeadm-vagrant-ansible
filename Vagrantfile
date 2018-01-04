@@ -28,7 +28,6 @@ Vagrant.configure("2") do |config|
 		File.open(bashrc, "w") {
 			|file| file.puts bash_search
 		}
-		config.vm.provision :shell, inline: "cp -rf /vagrant/prov/configs/bashrc /root/.bashrc && source /root/.bashrc"
 	else
 		readg = File.read(global)
 		glob_search = readg.gsub(global_proxy_on, global_proxy_off)
@@ -41,6 +40,7 @@ Vagrant.configure("2") do |config|
 			|file| file.puts bash_search
 		}
 	end
+	config.vm.provision :shell, inline: "cp -rf /vagrant/prov/configs/bashrc /root/.bashrc && source /root/.bashrc"
 	config.ssh.insert_key = false
 	config.vm.provision "shell", inline: <<-SHELL
       test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)

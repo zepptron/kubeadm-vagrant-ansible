@@ -18,7 +18,7 @@ host_groups: [
 
 # an array of common users
 users: [
-  { name: "{{ app_user }}", uid: "1500", group: "{{ app_group }}", groups: "docker,sudo", password: "{{ app_pw }}" }
+  { name: "{{ app_user }}", uid: "1500", group: "{{ app_group }}", groups: "docker", password: "{{ app_pw }}" }
 ]
 
 # an array of directories which needs to be created
@@ -35,8 +35,6 @@ keys: [
 
 # A list of rsa keys which should be added to the authorized_key file
 authorized_keys: [
-  { user: "{{ app_user }}", key: "roles/users/files/id_rsa_ansible.pub" },
-  { user: "root",           key: "roles/users/files/id_rsa_ansible.pub" },
   { user: "{{ app_user }}", key: "roles/users/files/id_rsa_{{ env }}.pub" },
   { user: "root",           key: "roles/users/files/id_rsa_{{ env }}.pub" }
 ]
