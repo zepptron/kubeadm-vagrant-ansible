@@ -75,7 +75,7 @@
 
 - name: Init Kubernetes cluster
   when: inventory_hostname in groups['master']
-  shell: kubeadm init --apiserver-advertise-address 10.10.0.10 --token {{ kube_token }}
+  shell: kubeadm init --apiserver-advertise-address {{ ip }} --token {{ kube_token }} --pod-network-cidr={{ pod_network_cidr }}
 
 - name: Ensure to create the Kubernetes configdirectory for zepp
   file: path=/home/zepp/.kube/ state=directory
@@ -109,7 +109,7 @@
 
 - name: Ensure nodes are connected to the Kubernetes API
   when: inventory_hostname in groups['nodes']
-  shell: kubeadm join --token {{ kube_token }} 10.10.0.10:6443 --discovery-token-unsafe-skip-ca-verification
+  shell: kubeadm join --token {{ kube_token }} 172.16.0.10:6443 --discovery-token-unsafe-skip-ca-verification
 
 - name: Start Flannel...
   when: inventory_hostname in groups['master']

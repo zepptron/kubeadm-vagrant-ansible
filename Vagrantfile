@@ -49,7 +49,7 @@ Vagrant.configure("2") do |config|
 	# masterblaster:
 	config.vm.define "kube-boss" do |d|
 		d.vm.hostname = "kube-boss.foo.io"
-		d.vm.network "private_network", ip: "10.10.0.10"
+		d.vm.network(:private_network, { ip: "172.16.0.10" })
 		d.vm.provision :shell, path: "prov/tools.sh"	# ansible
 		d.vm.provision :shell, inline: 'PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/init.yml -c local'
 		d.vm.provider "virtualbox" do |v|
@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
 	(1..N).each do |machine_id|
 		config.vm.define "kube-#{machine_id}" do |machine|
 			machine.vm.hostname = "kube-#{machine_id}.foo.io"
-			machine.vm.network "private_network", ip: "10.10.0.#{10+machine_id}"
+			machine.vm.network(:private_network, { ip: "172.16.0.#{10+machine_id}" })
 			machine.vm.provider "virtualbox" do |v|
 				v.memory = 512
 			end

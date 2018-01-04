@@ -3,6 +3,7 @@
 # generic vars
 domain: "foo.io"
 env: "dev"
+ip: "{{ ansible_enp0s8.ipv4.address }}"
 
 # User vars
 app_user: "zepp"
@@ -14,8 +15,6 @@ kube_version: v1.9.2
 kube_token: c0e6b3.5a3467256293c85b
 kubectl_config: /etc/kubernetes/admin.conf
 pod_network_cidr: 10.244.0.0/16				# 65536 addrs for pods
-service_subnet: 10.96.0
-service_cidr: "{{ service_subnet }}.0/16"	# 65536 addrs for services
 
 # Proxystuff
 proxy: false
