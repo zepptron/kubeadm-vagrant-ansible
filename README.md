@@ -23,7 +23,7 @@ There is this one user called "zepp" (default-pw: bitch) which is able to intera
 ### Working fast
 the command `k` is your friend. It's the alias for `kubectl` because you will be angry when you always have to type _k u b e c t l_ ... followed by a namespace :)
 
-So if you want to work in a specific namespace and you are annoyed of always typing `kubectl -n kube-public get pods -o wide` just adjust the _.bashrc_ file to your needs! I've already covered the standard namespaces, you just have to type `k-pub` (kube-public), `k-sys` (kube-system) or `k-def` (default) to work in a specific namespace. So when everything is installed and you login as "zepp", try the following:
+So if you want to work in a specific namespace and you are annoyed of always typing `kubectl -n kube-public get pods -o wide` just adjust the _.bashrc_ file to your needs and it will be `k get pods -o wide`! I've already covered the standard namespaces, you just have to type `k-pub` (kube-public), `k-sys` (kube-system) or `k-def` (default) to work in a specific namespace. So when everything is installed and you login as "zepp", try the following:
 
 ```
 k-sys
