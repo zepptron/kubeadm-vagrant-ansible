@@ -24,7 +24,7 @@ the kubernetes components will be installed like this:
 - kubectl on kube-boss
 - kubelet and kubeadm everywhere (kube-boss, kube-1, kube-2, kube-3)
 
-<img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="1200">
+<img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
 
 
 
