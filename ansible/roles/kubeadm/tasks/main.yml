@@ -143,6 +143,6 @@
 
 - name: Start Flannel...
   when: inventory_hostname in groups['master']
-  shell: "kubectl apply -f /vagrant/ansible/flannel.yml"
+  shell: "kubectl apply -f /vagrant/ansible/deployments/flannel.yml"
 
 

@@ -2,11 +2,14 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: webtest
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
   labels:
     app: webl0r
 spec:
   rules:
-  - host: test.foo.io
+  - host: test.example.com
     http:
       paths:
       - path: /
@@ -18,6 +21,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: webling
+  namespace: default
 spec:
   selector:
     app: webl0r
