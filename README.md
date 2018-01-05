@@ -8,7 +8,7 @@ Run the following to enable hostnames, install docker and kubernetes components 
 vagrant ssh kube-boss # "ubu" is the password by default, waiting for a fix here...
 ..
 sudo -i
-ansible-playbook -i /vagrant/ansible/inventories/dev/dev.ini /vagrant/ansible/install.yml
+ansible-playbook -i /vagrant/ansible/inventories/vagrant/vagrant.ini /vagrant/ansible/vagrant-install.yml
 ..
 watch kubectl get nodes
 ```
@@ -16,7 +16,7 @@ watch kubectl get nodes
 <img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
 
 ## Protips
-There is this one user called "zepp" (default-pw: bitch) which is able to interact with kubernetes. You should use this one rather than always playing with root. There are also some sweet hacks in `.bashrc` like `k-nodes`, which will give you some stats about the cluster.
+There is this one user called "zepp" (default-pw: bitch) which is able to interact with kubernetes. You should use this one rather than always playing with root. There are also some sweet hacks in `.bashrc` like `k-nodes`, which will give you some stats about the cluster. Define your own user in the inventories folder.
 
 <img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/k-node.jpg?raw=true" width="400">
 

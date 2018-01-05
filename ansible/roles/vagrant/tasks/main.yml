@@ -1,0 +1,13 @@
+---
+
+- name: insert Hostnames
+  template:
+    src: roles/vagrant/templates/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure the Hostname is set
+  hostname:
+    name: "{{ hostname }}"

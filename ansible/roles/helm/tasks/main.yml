@@ -1,0 +1,31 @@
+---
+
+- name: Download Helm
+  when: inventory_hostname in groups['master']
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-helm/{{ helm_version }}-linux-{{ helm_arch }}.tar.gz
+    dest: /tmp/helm.tar.gz
+    mode: 0440
+  tags: [helm]
+
+- name: Extract Helm into /tmp
+  when: inventory_hostname in groups['master']
+  unarchive:
+    src: /tmp/helm.tar.gz
+    dest: /tmp/
+  tags: [helm]
+
+- name: Copy Helm Binary into /usr/local/bin/
+  when: inventory_hostname in groups['master']
+  copy:
+    src: /tmp/linux-{{ helm_arch }}/helm
+    dest: /usr/local/bin/helm
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: 0744
+  tags: [helm]
+
+- name: Initialize Helm
+  when: inventory_hostname in groups['master']
+  shell: helm init --home /home/{{ app_user }}/.helm/
+  tags: [helm]

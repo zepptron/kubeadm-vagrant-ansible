@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 	config.vm.box = "ubuntu/xenial64"
 	config.vm.synced_folder ".", "/vagrant"
 	# proxy settings...
-	global = "ansible/inventories/dev/group_vars/all"
+	global = "ansible/inventories/vagrant/group_vars/all"
 	bashrc = "prov/configs/bashrc"
 	$proxy_exp = "export {http,https,ftp}_proxy='#{$proxy_url}'"
 	global_proxy_off = "proxy: false\nproxy_url: '#{$proxy_url}'"

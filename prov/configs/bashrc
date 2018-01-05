@@ -7,26 +7,5 @@ reset=`tput sgr0`
 
 alias ll="ls -lah"
 alias k="kubectl"
-source <(kubectl completion bash)
-
-function k-sys() {
-  alias k="kubectl --namespace kube-system"
-  printf "\n${red}kubectl --namespace kube-system active\n\n${reset}"
-}
-function k-pub() {
-  alias k="kubectl --namespace kube-public"
-  printf "\n${green}kubectl --namespace kube-public active\n\n${reset}"
-}
-function k-def() {
-  alias k="kubectl"
-  printf "\n${green}kubectl without namespace active\n\n${reset}"
-}
-
-function k-nodes() {
-  for i in kube-{1..3}; do
-    printf "${yellow}item: $i:${reset}\n"
-    kubectl describe node $i.foo.io | grep -A4 "Allocated resources:"
-  done
-}
 
 # export {http,https,ftp}_proxy='http://proxy.fhm.de:8080'
