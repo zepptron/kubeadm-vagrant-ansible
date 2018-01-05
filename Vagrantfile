@@ -1,8 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+N = 3 	# define number of nodes
 $proxy = false	# true or false
-$proxy_url = "http://proxy.fhm.de:8080"	# enter proxy URL here!
+$proxy_url = "http://proxy.fhm.de:8080"	# enter proxy URL here
 
 Vagrant.configure("2") do |config|
 	
@@ -58,7 +59,6 @@ Vagrant.configure("2") do |config|
 	end
 
 	# workernodes:
-	N = 3
 	(1..N).each do |machine_id|
 		config.vm.define "kube-#{machine_id}" do |machine|
 			machine.vm.hostname = "kube-#{machine_id}.foo.io"

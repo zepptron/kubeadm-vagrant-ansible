@@ -1,19 +1,37 @@
-Basic stuff is working but I still got some TDOs left.
+This combination of Vagrant, Ansible and Kubeadm will give you a running Kubernetes Cluster within a few seconds. 
 
 ## How to start
-Install Vagrant on your machine. Then start your VMs with a simple "vagrant up", afterwards you'll have 4 running VMs not knowing each other very good.
-Run the following to enable hostnames, install docker and kubernetes components including flannel:
+Install Vagrant on your machine. Then start your VMs with a simple "vagrant up", afterwards you'll have 4 running VMs not knowing each other very good. Sorry for the password, this is a known bug -> https://bugs.launchpad.net/cloud-images/+bug/1569237
+
+Run the following to enable hostnames, install docker and kubernetes components including flannel.
 
 ```
-vagrant ssh kube-boss # "ubu" is the password by default, waiting for a fix here...
+vagrant ssh kube-boss 	## pw: ubu
 ..
 sudo -i
 ansible-playbook -i /vagrant/ansible/inventories/vagrant/vagrant.ini /vagrant/ansible/vagrant-install.yml
-..
-watch kubectl get nodes
 ```
 
 <img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
+
+### deploy Traefik and a Testapplication
+
+```
+k create -f /vagrant/ansible/deployments/traefik.yml
+k create -f /vagrant/ansible/deployments/test.yml
+```
+
+You just have published traefik as a loadbalancer including a webUI and a testdeployment which is constantly echoing the hostname of the container. 
+
+Check your `/etc/hosts` file and add these lines to access the frontends:
+
+```
+172.16.0.11     test.example.com
+172.16.0.11     traefik.example.com
+```
+
+Now open http://test.example.com and http://traefik.example.com in your webbrowser and see what you have done.
+Reload test.example.com a few times to see the loadbalancing in action.
 
 ## Protips
 There is this one user called "zepp" (default-pw: bitch) which is able to interact with kubernetes. You should use this one rather than always playing with root. There are also some sweet hacks in `.bashrc` like `k-nodes`, which will give you some stats about the cluster. Define your own user in the inventories folder.
@@ -36,9 +54,9 @@ This also works for deploying stuff etc, it's just an alias.
 ## Todos
 - kill proxyfuckups while using kubeadm
 - repair userfuckup in vagrantbox: https://bugs.launchpad.net/cloud-images/+bug/1569237 
-- add some healthchecks
-- be much more generic!
-- integrate traefik and a demoservice
+- add prometheus and collect docker and traefik metrics
+- add helm
+- integrate HA-features
 
 ## Proxy
 By default the proxy settings are turned off. If you need to fight with a proxy, enable and configure it in the Vagrantfile. It's defined at the top:
