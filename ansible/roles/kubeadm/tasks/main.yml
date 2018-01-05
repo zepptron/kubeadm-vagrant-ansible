@@ -25,7 +25,7 @@
 
 - name: Ensure Kubernetes repo is available
   apt_repository:
-    repo: 'deb http://apt.kubernetes.io/ kubernetes-xenial main'
+    repo: 'deb http://apt.kubernetes.io/ {{ kube_channel }} main'
     filename: kubernetes
     state: present
 
@@ -40,24 +40,24 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - kubelet
-    - kubeadm
+    - kubelet={{ kubelet_version }}
+    - kubeadm={{ kubeadm_version }}
 
-- name: Installing Kubectl on Master Node
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - kubectl
-  when: inventory_hostname in groups['master']
+#- name: Installing Kubectl on Master Node
+#  apt:
+#    name: "{{ item }}"
+#    state: present
+#  with_items:
+#    - kubectl
+#  when: inventory_hostname in groups['master']
 
-- name: Ensure to replace bashrc for zepp
+- name: Ensure to replace bashrc for $app_user
   when: inventory_hostname in groups['master']
   copy:
     src: /root/.bashrc
-    dest: /home/zepp/.bashrc
-    owner: zepp
-    group: zepp
+    dest: /home/{{ app_user }}/.bashrc
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
     mode: 0744
     
 - name: Ensure Kubelet Unitfile is setup with cgroup defined
@@ -81,19 +81,19 @@
 
 - name: Init Kubernetes cluster
   when: inventory_hostname in groups['master']
-  shell: kubeadm init --apiserver-advertise-address {{ ip }} --token {{ kube_token }} --pod-network-cidr={{ pod_network_cidr }}
+  shell: kubeadm init --kubernetes-version {{ kube_version }} --apiserver-advertise-address {{ ip }} --token {{ kube_token }} --pod-network-cidr={{ pod_network_cidr }}
 
-- name: Ensure to create the Kubernetes configdirectory for zepp
-  file: path=/home/zepp/.kube/ state=directory
+- name: Ensure to create the Kubernetes configdirectory for $app_user
+  file: path=/home/{{ app_user }}/.kube/ state=directory
   when: inventory_hostname in groups['master']
 
-- name: Copy admin.conf to /home/zepp/.kube directory
+- name: Copy admin.conf to /home/{{ app_user }}/.kube directory
   when: inventory_hostname in groups['master']
   copy:
     src: "{{ kubectl_config }}"
-    dest: "/home/zepp/.kube/config"
-    owner: zepp
-    group: zepp
+    dest: "/home/{{ app_user }}/.kube/config"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
     mode: 0744
 
 - name: Ensure to create the Kubernetes configdirectory for root
@@ -105,8 +105,8 @@
   copy:
     src: "{{ kubectl_config }}"
     dest: "/root/.kube/config"
-    owner: zepp
-    group: zepp
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
     mode: 0744
 
 - name: Ensure Kubernetes nodes are set to defaultvalues
@@ -115,7 +115,31 @@
 
 - name: Ensure nodes are connected to the Kubernetes API
   when: inventory_hostname in groups['nodes']
-  shell: kubeadm join --token {{ kube_token }} 172.16.0.10:6443 --discovery-token-unsafe-skip-ca-verification
+  shell: kubeadm join --token {{ kube_token }} {{ kube_master_ip }}:6443 --discovery-token-unsafe-skip-ca-verification
+
+- name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
+  blockinfile:
+    path: /home/{{ app_user }}/.bashrc
+    block: |
+      source <(kubectl completion bash)
+      function k-sys() {
+        alias k="kubectl --namespace kube-system"
+        printf "\n${red}kubectl --namespace kube-system active\n\n${reset}"
+      }
+      function k-pub() {
+        alias k="kubectl --namespace kube-public"
+        printf "\n${green}kubectl --namespace kube-public active\n\n${reset}"
+      }
+      function k-def() {
+        alias k="kubectl"
+        printf "\n${green}kubectl without namespace active\n\n${reset}"
+      }
+      function k-nodes() {
+        for i in kube-{1..3}; do
+          printf "${yellow}item: $i:${reset}\n"
+          kubectl describe node $i.foo.io | grep -A4 "Allocated resources:"
+        done
+      }
 
 - name: Start Flannel...
   when: inventory_hostname in groups['master']

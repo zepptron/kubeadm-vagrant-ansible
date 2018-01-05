@@ -1,17 +1,5 @@
 ---
 
-- name: insert Hostnames
-  template:
-    src: roles/docker/templates/hosts.j2
-    dest: /etc/hosts
-    owner: root
-    group: root
-    mode: 0644
-
-- name: Ensure the Hostname is set
-  hostname:
-    name: "{{ hostname }}"
-
 - name: Ensure swap is disabled
   command: swapoff -a
 
@@ -33,7 +21,7 @@
 
 - name: Add Docker Key
   apt_repository:
-    repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable'
+    repo: 'deb [arch={{ docker_arch }}] https://download.docker.com/linux/{{ docker_dist }} {{ docker_dist_v }} {{ docker_channel }}'
     filename: docker
     state: present
 
@@ -45,9 +33,9 @@
 
 - name: Installing docker...
   apt:
-    name: docker-ce=17.03.2~ce-0~ubuntu-xenial
+    name: docker-ce={{ docker_version }}
 
-- name: add Docker systemd file
+- name: Add Docker systemd file
   template:
     src: roles/docker/templates/docker.service.j2
     dest: /lib/systemd/system/docker.service
@@ -77,8 +65,3 @@
     name: docker.service
     state: restarted
     daemon_reload: yes
-
-
-    
-    
-
