@@ -23,7 +23,7 @@ k create -f /vagrant/ansible/deployments/test.yml
 
 You just have published traefik as a loadbalancer including a webUI and a testdeployment which is constantly echoing the hostname of the container. 
 
-Check your `/etc/hosts` file and add these lines to access the frontends:
+Check your local `/etc/hosts` file and add these lines to access the frontends:
 
 ```
 172.16.0.11     test.example.com
