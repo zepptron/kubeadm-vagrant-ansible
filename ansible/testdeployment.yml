@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: webtest
+  labels:
+    app: webl0r
+spec:
+  rules:
+  - host: test.foo.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: webling
+          servicePort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: webling
+spec:
+  selector:
+    app: webl0r
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webtest
+  labels:
+    app: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webl0r
+  template:
+    metadata:
+      labels:
+        app: webl0r
+    spec:
+      containers:
+      - name: whoami
+        image: jwilder/whoami
+        ports:
+        - containerPort: 80
+
+
