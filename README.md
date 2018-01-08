@@ -52,7 +52,6 @@ k-nodes
 This also works for deploying stuff etc, it's just an alias.
 
 ## Todos
-- kill proxyfuckups while using kubeadm
 - repair userfuckup in vagrantbox: https://bugs.launchpad.net/cloud-images/+bug/1569237 
 - add prometheus and collect docker and traefik metrics
 - add helm

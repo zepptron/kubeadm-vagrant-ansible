@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 N = 3 	# define number of nodes
-$proxy = false	# true or false
+$proxy = true	# true or false
 $proxy_url = "http://proxy.fhm.de:8080"	# enter proxy URL here
 
 Vagrant.configure("2") do |config|

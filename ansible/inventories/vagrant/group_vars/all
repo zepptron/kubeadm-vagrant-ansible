@@ -34,5 +34,5 @@ helm_version: "helm-v2.7.2"
 helm_arch: "amd64"
 
 # Proxystuff
-proxy: false
+proxy: true
 proxy_url: 'http://proxy.fhm.de:8080'

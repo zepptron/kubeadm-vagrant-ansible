@@ -7,6 +7,7 @@
     sysctl_set: yes
     state: present
     reload: yes
+  tags: [kubeadm]
 
 - name: Ensure depdencies are installed
   apt:
@@ -15,6 +16,7 @@
   with_items:
     - apt-transport-https
     - ca-certificates
+  tags: [kubeadm]
 
 - name: Add Google GPG key
   apt_key:
@@ -22,18 +24,22 @@
     state: present
   register: add_repository_key
   ignore_errors: true
+  tags: [kubeadm]
 
 - name: Ensure Kubernetes repo is available
   apt_repository:
     repo: 'deb http://apt.kubernetes.io/ {{ kube_channel }} main'
     filename: kubernetes
     state: present
+  tags: [kubeadm]
 
 - name: apt-get clean
   command: apt-get clean
+  tags: [kubeadm]
 
 - name: apt-get update
   command: apt-get update
+  tags: [kubeadm]
 
 - name: Installing Kubelets and Kubeadm
   apt:
@@ -42,24 +48,24 @@
   with_items:
     - kubelet={{ kubelet_version }}
     - kubeadm={{ kubeadm_version }}
+  tags: [kubeadm]
 
-#- name: Installing Kubectl on Master Node
-#  apt:
-#    name: "{{ item }}"
-#    state: present
-#  with_items:
-#    - kubectl
-#  when: inventory_hostname in groups['master']
-
+- name: Ensure no_proxy env is set
+  when: proxy == true
+  lineinfile:
+    path: /root/.bashrc
+    line: "export no_proxy='.{{ domain }},localhost,{{ ip }},{{ kube_master_ip }}'"
+  tags: [kubeadm]
+  
 - name: Ensure to replace bashrc for $app_user
-  when: inventory_hostname in groups['master']
   copy:
     src: /root/.bashrc
     dest: /home/{{ app_user }}/.bashrc
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
     mode: 0744
-    
+  tags: [kubeadm]
+
 - name: Ensure Kubelet Unitfile is setup with cgroup defined
   template:
     src: roles/kubeadm/templates/kubeadm.conf.j2
@@ -67,25 +73,31 @@
     owner: root
     group: root
     mode: 0644
+  tags: [kubeadm]
 
 - name: Ensure systemd is reloaded
   systemd: daemon_reload=yes
+  tags: [kubeadm]
 
 - name: Ensure kubelet has restarted
   systemd:
     state: restarted
     name: kubelet
+  tags: [kubeadm]
 
 - name: Ensure Kubernetes master is set to defaultvalues
   shell: "kubeadm reset"
+  tags: [kubeadm]
 
 - name: Init Kubernetes cluster
   when: inventory_hostname in groups['master']
   shell: kubeadm init --kubernetes-version {{ kube_version }} --apiserver-advertise-address {{ ip }} --token {{ kube_token }} --pod-network-cidr={{ pod_network_cidr }}
+  tags: [kubeadm]
 
 - name: Ensure to create the Kubernetes configdirectory for $app_user
   file: path=/home/{{ app_user }}/.kube/ state=directory
   when: inventory_hostname in groups['master']
+  tags: [kubeadm]
 
 - name: Copy admin.conf to /home/{{ app_user }}/.kube directory
   when: inventory_hostname in groups['master']
@@ -95,10 +107,12 @@
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
     mode: 0744
+  tags: [kubeadm]
 
 - name: Ensure to create the Kubernetes configdirectory for root
   file: path=/root/.kube/ state=directory
   when: inventory_hostname in groups['master']
+  tags: [kubeadm]
 
 - name: Copy admin.conf to /root/.kube directory
   when: inventory_hostname in groups['master']
@@ -108,16 +122,20 @@
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
     mode: 0744
+  tags: [kubeadm]
 
 - name: Ensure Kubernetes nodes are set to defaultvalues
   when: inventory_hostname in groups['nodes']
   shell: "kubeadm reset"
+  tags: [kubeadm]
 
 - name: Ensure nodes are connected to the Kubernetes API
   when: inventory_hostname in groups['nodes']
   shell: kubeadm join --token {{ kube_token }} {{ kube_master_ip }}:6443 --discovery-token-unsafe-skip-ca-verification
+  tags: [kubeadm]
 
 - name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
+  when: inventory_hostname in groups['master']
   blockinfile:
     path: /home/{{ app_user }}/.bashrc
     block: |
@@ -140,9 +158,10 @@
           kubectl describe node $i.foo.io | grep -A4 "Allocated resources:"
         done
       }
+  tags: [kubeadm]
 
 - name: Start Flannel...
   when: inventory_hostname in groups['master']
   shell: "kubectl apply -f /vagrant/ansible/deployments/flannel.yml"
-
+  tags: [kubeadm]
 
