@@ -8,4 +8,4 @@ reset=`tput sgr0`
 alias ll="ls -lah"
 alias k="kubectl"
 
- export {http,https,ftp}_proxy='http://proxy.fhm.de:8080'
+# export {http,https,ftp}_proxy='http://proxy.fhm.de:8080'
