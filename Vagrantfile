@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-N = 3 	# define number of nodes
-$proxy = false	# true or false
+N = 2 	# define number of nodes
+$proxy = true	# true or false
 $proxy_url = "http://proxy.fhm.de:8080"	# enter proxy URL here
 
 Vagrant.configure("2") do |config|
@@ -48,13 +48,15 @@ Vagrant.configure("2") do |config|
   	SHELL
 
 	# masterblaster:
-	config.vm.define "kube-boss" do |d|
-		d.vm.hostname = "kube-boss.foo.io"
-		d.vm.network(:private_network, { ip: "172.16.0.10" })
-		d.vm.provision :shell, path: "prov/tools.sh"	# ansible
-		d.vm.provision :shell, inline: 'PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/init.yml -c local'
-		d.vm.provider "virtualbox" do |v|
-			v.memory = 1024
+	(1..3).each do |master_id|
+		config.vm.define "kube-m#{master_id}" do |master|
+			master.vm.hostname = "kube-m#{master_id}.foo.io"
+			master.vm.network(:private_network, { ip: "172.16.0.#{9+master_id}" })
+			master.vm.provision :shell, path: "prov/tools.sh"	# ansible
+			master.vm.provision :shell, inline: 'PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/init.yml -c local'
+			master.vm.provider "virtualbox" do |v|
+				v.memory = 768
+			end
 		end
 	end
 
@@ -62,7 +64,7 @@ Vagrant.configure("2") do |config|
 	(1..N).each do |machine_id|
 		config.vm.define "kube-#{machine_id}" do |machine|
 			machine.vm.hostname = "kube-#{machine_id}.foo.io"
-			machine.vm.network(:private_network, { ip: "172.16.0.#{10+machine_id}" })
+			machine.vm.network(:private_network, { ip: "172.16.0.#{13+machine_id}" })
 			machine.vm.provider "virtualbox" do |v|
 				v.memory = 512
 			end

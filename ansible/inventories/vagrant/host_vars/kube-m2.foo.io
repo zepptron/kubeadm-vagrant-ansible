@@ -2,4 +2,4 @@
 # Host Vars File for Master Node
 
 # Hostname:
-hostname: "kube-boss.foo.io"
+hostname: "kube-m2.foo.io"
