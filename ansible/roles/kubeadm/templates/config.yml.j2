@@ -1,0 +1,20 @@
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: {{ ip }}
+etcd:
+  endpoints:
+  {% for node in groups['etcd-ip'] %}
+  - {{ etcd_prot }}://{{ node }}:{{ etcd_client_port }}
+  {% endfor %}
+#  caFile: <path|string>
+#  certFile: <path|string>
+#  keyFile: <path|string>
+#  dataDir: <path|string>
+#  extraArgs:
+#    <argument>: <value|string>
+#    <argument>: <value|string>
+networking:
+  podSubnet: {{ pod_network_cidr }}
+kubernetesVersion: {{ kube_version }}
+token: {{ kube_token }}

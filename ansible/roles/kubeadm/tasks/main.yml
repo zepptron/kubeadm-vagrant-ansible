@@ -1,4 +1,10 @@
 ---
+- name: Ensure no_proxy env is set
+  when: proxy == true
+  lineinfile:
+    path: /root/.bashrc
+    line: "export no_proxy='.{{ domain }},localhost,{% for node in groups['etcd-ip'] %}{{ node }}{% if not loop.last %},{% endif %}{% endfor %}'"
+  tags: [kubeadm]
 
 - name: Ensure to pass bridged IPv4 traffic to iptables chains
   sysctl:
@@ -49,13 +55,6 @@
     - kubelet={{ kubelet_version }}
     - kubeadm={{ kubeadm_version }}
   tags: [kubeadm]
-
-- name: Ensure no_proxy env is set
-  when: proxy == true
-  lineinfile:
-    path: /root/.bashrc
-    line: "export no_proxy='.{{ domain }},localhost,{{ ip }},{{ kube_master_ip }}'"
-  tags: [kubeadm]
   
 - name: Ensure to replace bashrc for $app_user
   copy:
@@ -85,13 +84,28 @@
     name: kubelet
   tags: [kubeadm]
 
+- name: Ensure to create the Kubeadm configdirectory
+  file: path={{ kubeadm_config_dir }} state=directory
+  when: inventory_hostname in groups['master']
+  tags: [kubeadm]
+
+- name: Copy kubeadm.conf to /etc/kubeadm directory
+  when: inventory_hostname in groups['master']
+  template:
+    src: "/vagrant/ansible/roles/kubeadm/templates/config.yml.j2"
+    dest: "{{ kubeadm_config_dir }}/config.yml"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: 0644
+  tags: [kubeadm]
+
 - name: Ensure Kubernetes master is set to defaultvalues
   shell: "kubeadm reset"
   tags: [kubeadm]
 
 - name: Init Kubernetes cluster
   when: inventory_hostname in groups['master']
-  shell: kubeadm init --kubernetes-version {{ kube_version }} --apiserver-advertise-address {{ ip }} --token {{ kube_token }} --pod-network-cidr={{ pod_network_cidr }}
+  shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
   tags: [kubeadm]
 
 - name: Ensure to create the Kubernetes configdirectory for $app_user

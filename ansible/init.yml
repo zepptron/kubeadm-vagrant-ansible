@@ -11,11 +11,6 @@
       owner: root
       group: root
       mode: 0644
-  - name: Ensure no_proxy env is set
-    when: proxy == true
-    lineinfile:
-      path: /root/.bashrc
-      line: "export no_proxy='.{{ domain }},localhost,{{ kube_master_ip }}'"
   - name: deactivate hostkey checks for kubes
     blockinfile:
       path: /etc/ssh/ssh_config

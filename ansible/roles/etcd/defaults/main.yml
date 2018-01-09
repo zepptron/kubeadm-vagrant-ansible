@@ -1,0 +1,22 @@
+
+role_name: "etcd"
+
+config_dir: "/etc/{{ role_name }}"
+data_dir: "/var/lib/{{ role_name }}/data"
+backup_dir: "/var/lib/{{ role_name }}/backup"
+
+directories: [
+  { path: "{{ config_dir }}",       owner: "{{ app_user }}", group: "{{ app_group }}", mode: 775 },
+  { path: "{{ data_dir }}",         owner: "{{ app_user }}", group: "{{ app_group }}", mode: 775 },
+  { path: "{{ backup_dir }}",       owner: "{{ app_user }}", group: "{{ app_group }}", mode: 775 }
+]
+
+configs: [
+  { src: "roles/{{ role_name }}/templates/etcd.conf.j2",    dest: "{{ config_dir }}/etcd.conf",       owner: "{{ app_user }}",  group: "{{ app_group }}",   mode: 660 },
+  { src: "roles/{{ role_name }}/templates/etcd.service.j2", dest: "/etc/systemd/system/etcd.service", owner: "root",            group: "root",              mode: 644 }
+]
+
+env_vars: [
+  { dest: "/root/.bashrc", line: "export ETCDCTL_API=3" },
+  { dest: "/root/.bashrc", line: "export ETCDCTL_ENDPOINTS={% for node in groups['etcd'] %}http://{{ node }}:{{ etcd_client_port }}{% if not loop.last %},{% endif %}{% endfor %}" }
+]

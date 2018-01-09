@@ -8,6 +8,7 @@
   roles:
     - vagrant # remove this role when installing on different environment
     - users
+    - etcd
     - docker
     - kubeadm
-    #- helm
+    - helm

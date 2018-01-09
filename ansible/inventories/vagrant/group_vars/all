@@ -18,11 +18,19 @@ docker_dist: "ubuntu"
 docker_dist_v: "xenial"
 docker_channel: "stable"
 
+# ETCD vars
+etcd_version: "v3.2.13"
+etcd_arch: "amd64"
+etcd_token: "9477af68bbee1b9ae037d6fd9e7efefd"
+etcd_peer_port: "2380"
+etcd_client_port: "2379"
+etcd_prot: "http"
 
 # Kubernetes vars
 kube_channel: "kubernetes-xenial"
 kube_version: "stable-1.9"
 kube_token: "c0e6b3.5a3467256293c85b"
+kubeadm_config_dir: "/etc/kubeadm"
 kubeadm_version: "1.9.1-00"
 kubelet_version: "1.9.1-00"
 kubectl_config: "/etc/kubernetes/admin.conf"
@@ -34,5 +42,5 @@ helm_version: "helm-v2.7.2"
 helm_arch: "amd64"
 
 # Proxystuff
-proxy: false
+proxy: true
 proxy_url: 'http://proxy.fhm.de:8080'
