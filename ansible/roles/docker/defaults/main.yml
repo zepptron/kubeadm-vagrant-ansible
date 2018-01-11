@@ -1,3 +1,15 @@
 ---
 
 role_name: "docker"
+
+# Docker vars
+docker_version: "17.03.2~ce-0~ubuntu-xenial"
+docker_arch: "amd64"
+docker_dist: "ubuntu"
+docker_dist_v: "xenial"
+docker_channel: "stable"
+
+configs: [
+  { src: "roles/{{ role_name }}/templates/daemon.json.j2",    dest: "/etc/{{ role_name }}/daemon.json",   owner: "{{ app_user }}",  group: "{{ app_group }}",   mode: 644 },
+  { src: "roles/{{ role_name }}/templates/docker.service.j2", dest: "/etc/systemd/system/docker.service", owner: "root",            group: "root",              mode: 644 }
+]

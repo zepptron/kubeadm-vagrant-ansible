@@ -3,3 +3,5 @@
 
 # Hostname:
 hostname: "kube-3.foo.io"
+
+worker: true

@@ -11,4 +11,4 @@
     - etcd
     - docker
     - kubeadm
-    - helm
+    #- helm

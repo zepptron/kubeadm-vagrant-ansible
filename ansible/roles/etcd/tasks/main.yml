@@ -1,5 +1,5 @@
 - name: Download ETCD...
-  when: inventory_hostname in groups['etcd']
+  when: etcd is defined
   get_url:
     url: https://github.com/coreos/etcd/releases/download/v3.2.13/etcd-v3.2.13-linux-amd64.tar.gz
     dest: /tmp/etcd.tar.gz
@@ -7,34 +7,14 @@
   tags: [etcd]
 
 - name: Extract ETCD into /tmp
-  when: inventory_hostname in groups['etcd']
+  when: etcd is defined
   unarchive:
     src: /tmp/etcd.tar.gz
     dest: /tmp/
   tags: [etcd]
 
-- name: Copy ETCD Binary into /usr/local/bin/
-  when: inventory_hostname in groups['etcd']
-  copy:
-    src: /tmp/etcd-{{ etcd_version }}-linux-{{ etcd_arch }}/etcd
-    dest: /usr/local/bin/etcd
-    owner: "{{ app_user }}"
-    group: "{{ app_user }}"
-    mode: 0755
-  tags: [etcd]
-
-- name: Copy ETCDCTL Binary into /usr/local/bin/
-  when: inventory_hostname in groups['etcd']
-  copy:
-    src: /tmp/etcd-{{ etcd_version }}-linux-{{ etcd_arch }}/etcdctl
-    dest: /usr/local/bin/etcdctl
-    owner: "{{ app_user }}"
-    group: "{{ app_user }}"
-    mode: 0755
-  tags: [etcd]
-
 - name: Ensure all needed directories are present
-  when: inventory_hostname in groups['etcd']
+  when: etcd is defined
   file:
     state: directory
     path: "{{ item.path }}"
@@ -44,8 +24,30 @@
   with_items: "{{ directories }}"
   tags: [etcd]
 
+- name: Ensure all needed binarys are present
+  when: etcd is defined
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: 0755
+  with_items: "{{ binarys }}"
+  tags: [etcd]
+
+- name: Ensure all needed Certificate files are present
+  when: etcd is defined
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items: "{{ certs }}"
+  tags: [etcd]
+
 - name: Ensure all needed configuration files are present
-  when: inventory_hostname in groups['etcd']
+  when: etcd is defined
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -53,33 +55,22 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode }}"
   with_items: "{{ configs }}"
-  register: config_result
-  tags: [etcd]
-
-- name: Ensure ETCD Unitfile is setup with cgroup defined
-  when: inventory_hostname in groups['etcd']
-  template:
-    src: roles/etcd/templates/etcd.service.j2
-    dest: /etc/systemd/system/etcd.service
-    owner: root
-    group: root
-    mode: 0644
   tags: [etcd]
 
 - name: Ensure systemd is reloaded
-  when: inventory_hostname in groups['etcd']
+  when: etcd is defined
   systemd: daemon_reload=yes
   tags: [etcd]
 
 - name: Ensure ETCD has restarted
-  when: inventory_hostname in groups['etcd']
+  when: etcd is defined
   systemd:
     state: started
     name: etcd
   tags: [etcd]
 
 - name: Ensure etcdctl is configured
-  when: inventory_hostname in groups['etcd']
+  when: etcd is defined
   lineinfile:
     state: present
     dest: "{{ item.dest }}"
