@@ -34,8 +34,8 @@ master_configs: [
 
 dirs: [
   { path: "{{ kubeadm_config_dir }}",     owner: "{{ app_user }}",  group: "{{ app_user }}",  mode: "0644" },
-  { path: "/home/{{ app_user }}/.kube/",  owner: "{{ app_user }}",  group: "{{ app_user }}",  mode: "0644" },
-  { path: "/root/.kube/",                 owner: "root",            group: "root",            mode: "0644" }
+  { path: "/home/{{ app_user }}/.kube/",  owner: "{{ app_user }}",  group: "{{ app_user }}",  mode: "0744" },
+  { path: "/root/.kube/",                 owner: "root",            group: "root",            mode: "0744" }
 ]
 
 copy: [
