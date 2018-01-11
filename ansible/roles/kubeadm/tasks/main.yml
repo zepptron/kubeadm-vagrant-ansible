@@ -1,5 +1,14 @@
 ---
 
+- name: Ensure etcdctl is configured with env vars
+  when: proxy == true
+  lineinfile:
+    state: present
+    dest: "{{ item.dest }}"
+    line: "{{ item.line }}"
+  with_items: "{{ env_vars }}"
+  tags: [kubeadm]
+
 - name: Ensure to pass bridged IPv4 traffic to iptables chains
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
@@ -7,15 +16,6 @@
     sysctl_set: yes
     state: present
     reload: yes
-  tags: [kubeadm]
-
-- name: Ensure depdencies are installed
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - apt-transport-https
-    - ca-certificates
   tags: [kubeadm]
 
 - name: Add Google GPG key
@@ -43,36 +43,40 @@
 
 - name: Installing Kubelets and Kubeadm
   apt:
-    name: "{{ item }}"
+    name: "{{ item.package }}"
     state: present
-  with_items:
-    - kubelet={{ kubelet_version }}
-    - kubeadm={{ kubeadm_version }}
+  with_items: "{{ packs }}"
   tags: [kubeadm]
 
-- name: Ensure no_proxy env is set
-  when: proxy == true
-  lineinfile:
-    path: /root/.bashrc
-    line: "export no_proxy='.{{ domain }},localhost,{{ ip }},{{ kube_master_ip }}'"
-  tags: [kubeadm]
-  
-- name: Ensure to replace bashrc for $app_user
-  copy:
-    src: /root/.bashrc
-    dest: /home/{{ app_user }}/.bashrc
-    owner: "{{ app_user }}"
-    group: "{{ app_user }}"
-    mode: 0744
+- name: Ensure all needed directories are present
+  file:
+    state: directory
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items: "{{ dirs }}"
   tags: [kubeadm]
 
-- name: Ensure Kubelet Unitfile is setup with cgroup defined
+- name: Ensure generic configfiles are present
   template:
-    src: roles/kubeadm/templates/kubeadm.conf.j2
-    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    owner: root
-    group: root
-    mode: 0644
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items: "{{ generic_configs }}"
+  tags: [kubeadm]
+
+- name: Ensure master configs are present
+  when: master is defined
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items: "{{ master_configs }}"
   tags: [kubeadm]
 
 - name: Ensure systemd is reloaded
@@ -90,52 +94,33 @@
   tags: [kubeadm]
 
 - name: Init Kubernetes cluster
-  when: inventory_hostname in groups['master']
-  shell: kubeadm init --kubernetes-version {{ kube_version }} --apiserver-advertise-address {{ ip }} --token {{ kube_token }} --pod-network-cidr={{ pod_network_cidr }}
+  when: master is defined
+  shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
   tags: [kubeadm]
 
-- name: Ensure to create the Kubernetes configdirectory for $app_user
-  file: path=/home/{{ app_user }}/.kube/ state=directory
-  when: inventory_hostname in groups['master']
-  tags: [kubeadm]
-
-- name: Copy admin.conf to /home/{{ app_user }}/.kube directory
-  when: inventory_hostname in groups['master']
+- name: Copy kube configs to users
+  when: master is defined
   copy:
-    src: "{{ kubectl_config }}"
-    dest: "/home/{{ app_user }}/.kube/config"
-    owner: "{{ app_user }}"
-    group: "{{ app_user }}"
-    mode: 0744
-  tags: [kubeadm]
-
-- name: Ensure to create the Kubernetes configdirectory for root
-  file: path=/root/.kube/ state=directory
-  when: inventory_hostname in groups['master']
-  tags: [kubeadm]
-
-- name: Copy admin.conf to /root/.kube directory
-  when: inventory_hostname in groups['master']
-  copy:
-    src: "{{ kubectl_config }}"
-    dest: "/root/.kube/config"
-    owner: "{{ app_user }}"
-    group: "{{ app_user }}"
-    mode: 0744
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items: "{{ copy }}"
   tags: [kubeadm]
 
 - name: Ensure Kubernetes nodes are set to defaultvalues
-  when: inventory_hostname in groups['nodes']
+  when: worker is defined
   shell: "kubeadm reset"
   tags: [kubeadm]
 
 - name: Ensure nodes are connected to the Kubernetes API
-  when: inventory_hostname in groups['nodes']
+  when: worker is defined
   shell: kubeadm join --token {{ kube_token }} {{ kube_master_ip }}:6443 --discovery-token-unsafe-skip-ca-verification
   tags: [kubeadm]
 
 - name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
-  when: inventory_hostname in groups['master']
+  when: master is defined
   blockinfile:
     path: /home/{{ app_user }}/.bashrc
     block: |
@@ -161,7 +146,7 @@
   tags: [kubeadm]
 
 - name: Start Flannel...
-  when: inventory_hostname in groups['master']
+  when: master is defined
   shell: "kubectl apply -f /vagrant/ansible/deployments/flannel.yml"
   tags: [kubeadm]
 

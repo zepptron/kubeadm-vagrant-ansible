@@ -1,0 +1,21 @@
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+api:
+  advertiseAddress: {{ ip }}
+etcd:
+  endpoints:
+  {% for node in groups['etcd'] %}
+  - {{ etcd_prot }}://{{ node }}:{{ etcd_client_port }}
+  {% endfor %}
+  # TLS crap starts here
+  caFile: {{ etcd_cert_dir }}/ca.pem
+  certFile: {{ etcd_cert_dir }}/member-{{ etcd_name }}.pem
+  keyFile: {{ etcd_cert_dir }}/member-{{ etcd_name }}-key.pem
+  dataDir: {{ etcd_data_dir }}
+networking:
+  podSubnet: {{ pod_network_cidr }}
+kubernetesVersion: {{ kube_version }}
+token: {{ kube_token }}
+nodeName: {{ hostname }}
+controllerManagerExtraArgs:
+  pod-eviction-timeout: 5s 
