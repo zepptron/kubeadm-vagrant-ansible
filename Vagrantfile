@@ -1,13 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-<<<<<<< HEAD
 N = 2	# define number of nodes
 $proxy = false	# true or false
-=======
-N = 2 	# define number of nodes
-$proxy = true	# true or false
->>>>>>> e98424bba53d36cc6f407c2a4a28298e97e5aaa5
 $proxy_url = "http://proxy.fhm.de:8080"	# enter proxy URL here
 
 Vagrant.configure("2") do |config|
@@ -60,11 +55,7 @@ Vagrant.configure("2") do |config|
 			master.vm.provision :shell, path: "prov/tools.sh"	# ansible
 			master.vm.provision :shell, inline: 'PYTHONUNBUFFERED=1 ansible-playbook /vagrant/ansible/init.yml -c local'
 			master.vm.provider "virtualbox" do |v|
-<<<<<<< HEAD
-				v.memory = 512
-=======
 				v.memory = 768
->>>>>>> e98424bba53d36cc6f407c2a4a28298e97e5aaa5
 			end
 		end
 	end
@@ -73,11 +64,7 @@ Vagrant.configure("2") do |config|
 	(1..N).each do |machine_id|
 		config.vm.define "kube-#{machine_id}" do |machine|
 			machine.vm.hostname = "kube-#{machine_id}.foo.io"
-<<<<<<< HEAD
 			machine.vm.network(:private_network, { ip: "172.16.0.#{12+machine_id}" })
-=======
-			machine.vm.network(:private_network, { ip: "172.16.0.#{13+machine_id}" })
->>>>>>> e98424bba53d36cc6f407c2a4a28298e97e5aaa5
 			machine.vm.provider "virtualbox" do |v|
 				v.memory = 512
 			end

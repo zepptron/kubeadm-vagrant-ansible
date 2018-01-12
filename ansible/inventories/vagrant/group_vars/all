@@ -12,30 +12,10 @@ app_user: "zepp"
 app_group: "zepp"
 app_pw: "$6$ceYviEZw0in3j3Ii$eU7UpgAcLGsge71plDbxTxfoSlw7qqub4uC4SKt6vN5UCmX/bzGwVEWcbCoQK2nTEiNxmVqhUthxN6nERYTWG."
 
-<<<<<<< HEAD
-=======
-# Docker vars
-docker_version: "17.03.2~ce-0~ubuntu-xenial"
-docker_arch: "amd64"
-docker_dist: "ubuntu"
-docker_dist_v: "xenial"
-docker_channel: "stable"
-
-# Kubernetes vars
-kube_channel: "kubernetes-xenial"
-kube_version: "stable-1.9"
-kube_token: "c0e6b3.5a3467256293c85b"
-kubeadm_version: "1.9.1-00"
-kubelet_version: "1.9.1-00"
-kubectl_config: "/etc/kubernetes/admin.conf"
-pod_network_cidr: "10.244.0.0/16"
-kube_master_ip: "172.16.0.10"
-
 # Helm vars
 helm_version: "helm-v2.7.2"
 helm_arch: "amd64"
 
->>>>>>> e98424bba53d36cc6f407c2a4a28298e97e5aaa5
 # Proxystuff
-proxy: true
+proxy: false
 proxy_url: 'http://proxy.fhm.de:8080'
