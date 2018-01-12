@@ -6,6 +6,7 @@ role_name: "kubeadm"
 kube_channel: "kubernetes-xenial"
 kube_version: "stable-1.9"
 kube_token: "c0e6b3.5a3467256293c85b"
+kubernetes_dir: "/etc/kubernetes"
 kubeadm_config_dir: "/etc/kubeadm"
 kubeadm_version: "1.9.1-00"
 kubelet_version: "1.9.1-00"
@@ -28,12 +29,10 @@ generic_configs: [
   { src: "roles/{{ role_name }}/templates/kubelet.conf.j2", dest: "/etc/systemd/system/kubelet.service.d/10-kubeadm.conf",  owner: "root", group: "root", mode: "0644" }
 ]
 
-master_configs: [
-  { src: "roles/{{ role_name }}/templates/config.yml.j2", dest: "{{ kubeadm_config_dir }}/config.yml", owner: "{{ app_user }}", group: "{{ app_user }}", mode: "0644" }
-]
-
 dirs: [
   { path: "{{ kubeadm_config_dir }}",     owner: "{{ app_user }}",  group: "{{ app_user }}",  mode: "0644" },
+  { path: "{{ kubernetes_dir }}",         owner: "{{ app_user }}",  group: "{{ app_user }}",  mode: "0644" },
+  { path: "{{ kubernetes_dir }}/pki",     owner: "{{ app_user }}",  group: "{{ app_user }}",  mode: "0644" },
   { path: "/home/{{ app_user }}/.kube/",  owner: "{{ app_user }}",  group: "{{ app_user }}",  mode: "0744" },
   { path: "/root/.kube/",                 owner: "root",            group: "root",            mode: "0744" }
 ]
@@ -42,4 +41,23 @@ copy: [
   { src: "{{ kubectl_config }}", dest: "/home/{{ app_user }}/.kube/config", owner: "{{ app_user }}", group: "{{ app_user }}", mode: "0644"},
   { src: "{{ kubectl_config }}", dest: "/root/.kube/config",                owner: "root",           group: "root",           mode: "0644"},
   { src: "/root/.bashrc",        dest: "/home/{{ app_user }}/.bashrc",      owner: "{{ app_user }}", group: "{{ app_user }}", mode: "0744"}
+]
+
+master_configs: [
+  { src: "roles/{{ role_name }}/templates/config.yml.j2", dest: "{{ kubeadm_config_dir }}/config.yml", owner: "{{ app_user }}", group: "{{ app_user }}", mode: "0644" }
+]
+
+master_certs: [
+  { src: "roles/certs/{{ env }}/kubeadm/apiserver-kubelet-client.crt",  dest: "{{ kubernetes_dir }}/pki/apiserver-kubelet-client.crt",  owner: "root", group: "root", mode: "0644"},
+  { src: "roles/certs/{{ env }}/kubeadm/apiserver-kubelet-client.key",  dest: "{{ kubernetes_dir }}/pki/apiserver-kubelet-client.key",  owner: "root", group: "root", mode: "0600"},
+  { src: "roles/certs/{{ env }}/kubeadm/apiserver.crt",                 dest: "{{ kubernetes_dir }}/pki/apiserver.crt",                 owner: "root", group: "root", mode: "0644"},
+  { src: "roles/certs/{{ env }}/kubeadm/apiserver.key",                 dest: "{{ kubernetes_dir }}/pki/apiserver.key",                 owner: "root", group: "root", mode: "0600"},
+  { src: "roles/certs/{{ env }}/kubeadm/ca.crt",                        dest: "{{ kubernetes_dir }}/pki/ca.crt",                        owner: "root", group: "root", mode: "0644"},
+  { src: "roles/certs/{{ env }}/kubeadm/ca.key",                        dest: "{{ kubernetes_dir }}/pki/ca.key",                        owner: "root", group: "root", mode: "0600"},
+  { src: "roles/certs/{{ env }}/kubeadm/front-proxy-ca.crt",            dest: "{{ kubernetes_dir }}/pki/front-proxy-ca.crt",            owner: "root", group: "root", mode: "0644"},
+  { src: "roles/certs/{{ env }}/kubeadm/front-proxy-ca.key",            dest: "{{ kubernetes_dir }}/pki/front-proxy-ca.key",            owner: "root", group: "root", mode: "0600"},
+  { src: "roles/certs/{{ env }}/kubeadm/front-proxy-client.crt",        dest: "{{ kubernetes_dir }}/pki/front-proxy-client.crt",        owner: "root", group: "root", mode: "0644"},
+  { src: "roles/certs/{{ env }}/kubeadm/front-proxy-client.key",        dest: "{{ kubernetes_dir }}/pki/front-proxy-client.key",        owner: "root", group: "root", mode: "0600"},
+  { src: "roles/certs/{{ env }}/kubeadm/sa.key",                        dest: "{{ kubernetes_dir }}/pki/sa.key",                        owner: "root", group: "root", mode: "0600"},
+  { src: "roles/certs/{{ env }}/kubeadm/sa.pub",                        dest: "{{ kubernetes_dir }}/pki/sa.pub",                        owner: "root", group: "root", mode: "0600"},
 ]

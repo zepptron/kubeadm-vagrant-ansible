@@ -4,14 +4,19 @@ api:
   advertiseAddress: {{ ip }}
 etcd:
   endpoints:
-  {% for node in groups['etcd'] %}
+{% for node in groups['etcd'] %}
   - {{ etcd_prot }}://{{ node }}:{{ etcd_client_port }}
-  {% endfor %}
-  # TLS crap starts here
+{% endfor %}
   caFile: {{ etcd_cert_dir }}/ca.pem
   certFile: {{ etcd_cert_dir }}/member-{{ etcd_name }}.pem
   keyFile: {{ etcd_cert_dir }}/member-{{ etcd_name }}-key.pem
   dataDir: {{ etcd_data_dir }}
+apiServerCertSANs:
+{% for node in groups['master'] %}
+- {{ node }}
+{% endfor %}
+- 127.0.0.1
+- {{ loadbalancer }}
 networking:
   podSubnet: {{ pod_network_cidr }}
 kubernetesVersion: {{ kube_version }}

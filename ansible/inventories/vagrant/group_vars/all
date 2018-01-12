@@ -5,6 +5,7 @@ domain: "foo.io"
 env: "vagrant"
 ip: "{{ ansible_enp0s8.ipv4.address }}"
 hostname: "{{ ansible_hostname }}"
+loadbalancer: "172.16.0.13"
 
 # User vars
 app_user: "zepp"

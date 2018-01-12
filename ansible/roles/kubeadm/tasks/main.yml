@@ -89,14 +89,46 @@
     name: kubelet
   tags: [kubeadm]
 
-- name: Ensure Kubernetes master is set to defaultvalues
+- name: Ensure everything is set to defaultvalues
   shell: "kubeadm reset"
   tags: [kubeadm]
 
+#- name: Ensure master certs are present
+#  when: master is defined
+#  template:
+#    src: "{{ item.src }}"
+#    dest: "{{ item.dest }}"
+#    owner: "{{ item.owner }}"
+#    group: "{{ item.group }}"
+#    mode: "{{ item.mode }}"
+#  with_items: "{{ master_certs }}"
+#  tags: [kubeadm]
+
 - name: Init Kubernetes cluster
-  when: master is defined
+  when: init is defined
   shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
   tags: [kubeadm]
+
+- name: Copy PKI to other masters
+  when: init is defined
+  synchronize:
+    src: /etc/kubernetes/pki/
+    dest: /etc/kubernetes/pki/
+  delegate_to: "{{ item }}"
+  with_items: 
+    - kube-m2.foo.io
+    - kube-m3.foo.io
+  tags: [kubeadm]
+
+#- name: Init Kubernetes cluster
+#  when: sec is defined
+#  shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
+#  tags: [kubeadm]
+#
+#- name: Init Kubernetes cluster
+#  when: sec is defined
+#  shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
+#  tags: [kubeadm]
 
 - name: Copy kube configs to users
   when: master is defined
@@ -143,10 +175,5 @@
           kubectl describe node $i.foo.io | grep -A4 "Allocated resources:"
         done
       }
-  tags: [kubeadm]
-
-- name: Start Flannel...
-  when: master is defined
-  shell: "kubectl apply -f /vagrant/ansible/deployments/flannel.yml"
   tags: [kubeadm]
 
