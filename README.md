@@ -1,13 +1,13 @@
 This combination of Vagrant, Ansible and Kubeadm will give you a running Kubernetes Cluster within a few seconds. 
-While I'm still working on HA features, ETCD is already clustered and ready for TLS!
+While I'm still working on HA features (see branches), ETCD is already clustered and equipped with TLS!
 
 ## How to start
-Install Vagrant on your machine. Then start your VMs with a simple "vagrant up", afterwards you'll have 4 running VMs not knowing each other very good. Sorry for the password, this is a known bug -> https://bugs.launchpad.net/cloud-images/+bug/1569237
+Install Vagrant on your machine. Then start your VMs with a simple "vagrant up", afterwards you'll have 4 running VMs not knowing each other very good.
 
 Run the following to enable hostnames, install docker and kubernetes components including flannel.
 
 ```
-vagrant ssh kube-boss 	## pw: ubu
+vagrant ssh kube-boss
 ..
 sudo -i
 ansible-playbook -i /vagrant/ansible/inventories/vagrant/vagrant.ini /vagrant/ansible/vagrant-install.yml
@@ -53,10 +53,8 @@ k-nodes
 This also works for deploying stuff etc, it's just an alias.
 
 ## Todos
-- repair userfuckup in vagrantbox: https://bugs.launchpad.net/cloud-images/+bug/1569237 
-- add prometheus and collect docker and traefik metrics
 - add helm
-- integrate HA-features
+- integrate HA-features (check the branches)
 
 ## Proxy
 By default the proxy settings are turned off. If you need to fight with a proxy, enable and configure it in the Vagrantfile. It's defined at the top:

@@ -9,7 +9,7 @@
 # an array of common groups
 host_groups: [
   { name: "{{ app_group }}",  gid: "1500" },
-  { name: "docker",           gid: "1001" }
+  { name: "docker",           gid: "1337" }
 ]
 
 # Hint: to create a password use:
