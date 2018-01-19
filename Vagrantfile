@@ -8,7 +8,6 @@ $proxy_url = "http://proxy.fhm.de:8080"	# enter proxy URL here
 Vagrant.configure("2") do |config|
 	
 	# global stuff
-	config.vm.provision "shell", inline: "echo 'ubuntu:ubu' | sudo chpasswd"
 	config.vm.provision :shell, path: "prov/prepare.sh"
 	config.vm.box = "ubuntu/xenial64"
 	config.vm.synced_folder ".", "/vagrant"

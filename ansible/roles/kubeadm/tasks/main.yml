@@ -109,27 +109,6 @@
   shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
   tags: [kubeadm]
 
-#- name: Copy PKI to other masters
-#  when: init is defined
-#  synchronize:
-#    src: /etc/kubernetes/pki/
-#    dest: /etc/kubernetes/pki/
-#  delegate_to: "{{ item }}"
-#  with_items: 
-#    - kube-m2.foo.io
-#    - kube-m3.foo.io
-#  tags: [kubeadm]
-
-#- name: Init Kubernetes cluster
-#  when: sec is defined
-#  shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
-#  tags: [kubeadm]
-#
-#- name: Init Kubernetes cluster
-#  when: sec is defined
-#  shell: kubeadm init --config {{ kubeadm_config_dir}}/config.yml 
-#  tags: [kubeadm]
-
 - name: Copy kube configs to users
   when: master is defined
   copy:
