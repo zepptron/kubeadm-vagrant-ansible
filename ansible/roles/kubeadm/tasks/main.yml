@@ -147,6 +147,6 @@
 
 - name: Start Flannel...
   when: master is defined
-  shell: "kubectl apply -f /vagrant/ansible/deployments/flannel.yml"
+  shell: "kubectl create -f /vagrant/ansible/deployments/flannel.yml"
   tags: [kubeadm]
 
