@@ -18,4 +18,7 @@ kubernetesVersion: {{ kube_version }}
 token: {{ kube_token }}
 nodeName: {{ hostname }}
 controllerManagerExtraArgs:
-  pod-eviction-timeout: 5s 
+  pod-eviction-timeout: 3s
+  node-monitor-grace-period: 6s
+  service-sync-period: 2s
+  deployment-controller-sync-period: 2s

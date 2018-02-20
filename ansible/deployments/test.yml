@@ -37,7 +37,7 @@ metadata:
   labels:
     app: web
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: webl0r
@@ -51,5 +51,3 @@ spec:
         image: jwilder/whoami
         ports:
         - containerPort: 80
-
-
