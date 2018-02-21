@@ -8,10 +8,14 @@ N = 3 	# define number of nodes
 Vagrant.configure("2") do |config|
 	
 	# global stuff
-	config.vm.provision "shell", inline: "echo 'ubuntu:ubu' | sudo chpasswd"
 	config.vm.provision :shell, path: "prov/prepare.sh"
 	config.vm.box = "ubuntu/xenial64"
-	config.vm.synced_folder ".", "/vagrant"
+	if (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+		config.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=700,fmode=600"], type: "rsync", rsync__exclude: ".git/"
+	else
+		config.vm.synced_folder ".", "/vagrant"
+	end
+
 	# proxy settings...
 	global = "ansible/inventories/vagrant/group_vars/all"
 	bashrc = "prov/configs/bashrc"
