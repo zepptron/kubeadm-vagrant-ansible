@@ -1,0 +1,23 @@
+- name: Ensure local Folder is created
+  when: storage is defined
+  file:
+    path: /mnt/disks
+    state: directory
+  tags: [storage]
+
+- name: Equip kube-3 with storage
+  when: storage is defined
+  shell: for vol in vol1 vol2 vol3; do mkdir /mnt/disks/$vol; mount -t tmpfs $vol /mnt/disks/$vol; done
+  tags: [storage]
+
+- name: Ensure index.html is in place
+  when: storage is defined
+  copy:
+    src: roles/storage/files/index.html
+    dest: /mnt/disks/vol1/index.html
+  tags: [storage]
+
+- name: Equip kube-3 with Label
+  when: master is defined
+  shell: kubectl label node kube-3.foo.io shit=bitch
+  tags: [storage]

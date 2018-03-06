@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webtest
+  labels:
+    app: web
+spec:
+  replicas: 12
+  selector:
+    matchLabels:
+      app: webl0r
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: webl0r
+    spec:
+      containers:
+      - name: hostexposer
+        image: zepp/fintest:32
+        ports:
+        - containerPort: 8000

@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: webling
+  namespace: default
+spec:
+  selector:
+    app: webl0r
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
