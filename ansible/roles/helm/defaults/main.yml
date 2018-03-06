@@ -3,5 +3,5 @@
 role_name: "helm"
 
 # Helm vars
-helm_version: "v2.8.0-rc.1"
+helm_version: "v2.8.1"
 helm_arch: "amd64"

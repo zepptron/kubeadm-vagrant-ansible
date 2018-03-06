@@ -20,12 +20,22 @@
   copy:
     src: /tmp/linux-{{ helm_arch }}/helm
     dest: /usr/local/bin/helm
-    owner: "{{ app_user }}"
-    group: "{{ app_user }}"
+    owner: "root"
+    group: "root"
     mode: 0744
   tags: [helm]
 
 - name: Initialize Helm
   when: master is defined
-  shell: helm init --home /home/{{ app_user }}/.helm/
+  shell: helm init #--home /home/{{ app_user }}/.helm/
+  tags: [helm]
+
+- name: Initialize RBAC for helm
+  when: master is defined
+  shell: kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
+  tags: [helm]
+
+- name: update Helm repos
+  when: master is defined
+  shell: helm repo update
   tags: [helm]
