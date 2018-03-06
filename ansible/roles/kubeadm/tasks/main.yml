@@ -122,8 +122,9 @@
 - name: insert/update "Match User" configuration block in /etc/ssh/sshd_config
   when: master is defined
   blockinfile:
-    path: /home/{{ app_user }}/.bashrc
+    path: /root/.bashrc
     block: |
+      source <(helm completion bash)
       source <(kubectl completion bash)
       function k-sys() {
         alias k="kubectl --namespace kube-system"

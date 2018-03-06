@@ -22,3 +22,5 @@ controllerManagerExtraArgs:
   node-monitor-grace-period: 6s
   service-sync-period: 2s
   deployment-controller-sync-period: 2s
+apiServerExtraArgs:
+  feature-gates: PersistentLocalVolumes=true
