@@ -5,6 +5,7 @@ domain: "foo.io"
 env: "vagrant"
 ip: "{{ ansible_enp0s8.ipv4.address }}"
 hostname: "{{ ansible_hostname }}"
+cgroupdriver: "systemd"
 
 # User vars
 app_user: "zepp"
