@@ -2,10 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webtest
+  namespace: default
   labels:
     app: web
 spec:
-  replicas: 12
+  replicas: 5
   selector:
     matchLabels:
       app: webl0r
