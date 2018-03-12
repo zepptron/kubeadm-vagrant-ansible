@@ -17,12 +17,7 @@ ansible-playbook -i /vagrant/ansible/inventories/vagrant/vagrant.ini /vagrant/an
 
 ### deploy Traefik and a Testapplication
 
-```
-k create -f /vagrant/ansible/deployments/traefik.yml
-k create -f /vagrant/ansible/deployments/test.yml
-```
-
-You just have published traefik as a loadbalancer including a webUI and a testdeployment which is constantly echoing the hostname of the container. 
+Flannel and Traefik are deployed by default. You can use something else by editing the playbook in `roles/kubeadm/tasks/main.yml`
 
 Check your local `/etc/hosts` file and add these lines to access the frontends:
 
