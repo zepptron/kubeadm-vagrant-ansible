@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
 			machine.vm.network(:private_network, { ip: "172.16.0.#{10+machine_id}" })
 			machine.vm.provider "virtualbox" do |v|
 				v.memory = 512
-			  v.customize ["modifyvm", :id, "--uartmode1", "disconnected"] # see: https://bugs.launchpad.net/cloud-images/+bug/1627844
+			  	v.customize ["modifyvm", :id, "--uartmode1", "disconnected"] # see: https://bugs.launchpad.net/cloud-images/+bug/1627844
 		end
 			end
 		end
