@@ -1,7 +1,7 @@
 global:
   namespace: "default"
 
-## Kubernetes Labels
+## Pod Labels
 labels:
   app: "webl0r" 
 
@@ -9,7 +9,7 @@ labels:
 webDeployment:
   name: frontend
   dockerImage: "zepp/fintest"
-  dockerTag: "33"
+  dockerTag: "42"
   replicas: 6
   port: 8000
   updateType: "RollingUpdate"
