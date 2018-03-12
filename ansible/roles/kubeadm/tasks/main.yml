@@ -33,12 +33,9 @@
     state: present
   tags: [kubeadm]
 
-- name: apt-get clean
-  command: apt-get clean
-  tags: [kubeadm]
-
-- name: apt-get update
-  command: apt-get update
+- name: Update APT Cache
+  apt:
+    update_cache: yes
   tags: [kubeadm]
 
 - name: Installing Kubelets and Kubeadm
@@ -146,8 +143,12 @@
       }
   tags: [kubeadm]
 
-- name: Start Flannel...
+- name: Starting Flannel...
   when: master is defined
-  shell: "kubectl create -f /vagrant/ansible/deployments/flannel.yml"
+  shell: "kubectl create -f /vagrant/ansible/deployments/sys/flannel.yml"
   tags: [kubeadm]
 
+- name: Starting Traefik...
+  when: master is defined
+  shell: "kubectl create -f /vagrant/ansible/deployments/sys/traefik.yml"
+  tags: [kubeadm]
