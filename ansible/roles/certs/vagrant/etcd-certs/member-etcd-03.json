@@ -1,0 +1,19 @@
+{
+    "CN": "member-etcd-03",
+    "hosts": [
+	"172.16.0.12",
+        "kube-3.foo.io"
+    ],
+    "key": {
+        "algo": "ecdsa",
+        "size": 256
+    },
+    "names": [
+        {
+            "C": "US",
+            "L": "CA",
+            "ST": "San Francisco"
+        }
+    ]
+}
+
