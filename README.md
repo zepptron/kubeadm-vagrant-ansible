@@ -10,16 +10,17 @@ Run the following to enable hostnames, install docker and kubernetes components 
 vagrant ssh kube-boss
 ..
 sudo -i
-ansible-playbook -i /vagrant/ansible/inventories/vagrant/vagrant.ini /vagrant/ansible/vagrant-install.yml
+cd /vagrant/ansible
+ansible-playbook -i inventories/vagrant/vagrant.ini vagrant-install.yml
 ```
 
 <img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
 
 ### deploy Traefik and a Testapplication
 
-You can use Flannel or Calico as your networking solution. Both are available in `/vagrant/ansible/deployments/sys/` as flannel.yml or calico.yml. Deploy them with `kubectl create -f calico.yml` or `flannel.yml`. Afterwards you can deploy whatever you want but you may want to use traffic as your reverse proxy to get access from the outside world. `k create -f traefik.yml` resides in the same folder as calico or flannel. 
+You can use Flannel or Calico as your networking solution. Both are available in `/vagrant/ansible/deployments/sys/` as flannel.yml or calico.yml. Deploy them with `kubectl create -f calico.yml` or `flannel.yml`. Afterwards you can deploy whatever you want but you may want to use traefik as your reverse proxy to get access from the outside world. `k create -f traefik.yml` will solve that. It's all in the same folder. 
 
-Check your local `/etc/hosts` file and add these lines to access the frontends:
+Check your local `/etc/hosts` file and add these lines to access the frontends running inside the cluster:
 
 ```
 172.16.0.11     traefik.example.com
