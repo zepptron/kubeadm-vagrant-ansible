@@ -4,10 +4,9 @@ api:
   advertiseAddress: {{ ip }}
 etcd:
   endpoints:
-  {% for node in groups['etcd'] %}
+{% for node in groups['etcd'] %}
   - {{ etcd_prot }}://{{ node }}:{{ etcd_client_port }}
-  {% endfor %}
-  # TLS crap starts here
+{% endfor %}
   caFile: {{ etcd_cert_dir }}/ca.pem
   certFile: {{ etcd_cert_dir }}/client.pem
   keyFile: {{ etcd_cert_dir }}/client-key.pem

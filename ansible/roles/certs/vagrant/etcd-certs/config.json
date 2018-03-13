@@ -1,8 +1,8 @@
 {
-    "CN": "member-etcd-02",
+    "CN": "kube-2.foo.io",
     "hosts": [
-	"172.16.0.11",
-        "kube-1.foo.io"
+        "kube-2.foo.io",
+        "172.16.0.12"
     ],
     "key": {
         "algo": "ecdsa",

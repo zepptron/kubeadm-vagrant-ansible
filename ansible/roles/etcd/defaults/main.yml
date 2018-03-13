@@ -34,16 +34,14 @@ configs: [
 ]
 
 certs: [
-  { src: "roles/certs/{{ env }}/etcd-certs/ca-key.pem",              dest: "{{ etcd_cert_dir }}/ca-key.pem",              owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/ca.pem",                  dest: "{{ etcd_cert_dir }}/ca.pem",                  owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/client-key.pem",          dest: "{{ etcd_cert_dir }}/client-key.pem",          owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/client.pem",              dest: "{{ etcd_cert_dir }}/client.pem",              owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/member-etcd-01-key.pem",  dest: "{{ etcd_cert_dir }}/member-etcd-01-key.pem",  owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/member-etcd-02-key.pem",  dest: "{{ etcd_cert_dir }}/member-etcd-02-key.pem",  owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/member-etcd-03-key.pem",  dest: "{{ etcd_cert_dir }}/member-etcd-03-key.pem",  owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/member-etcd-01.pem",      dest: "{{ etcd_cert_dir }}/member-etcd-01.pem",      owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/member-etcd-02.pem",      dest: "{{ etcd_cert_dir }}/member-etcd-02.pem",      owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
-  { src: "roles/certs/{{ env }}/etcd-certs/member-etcd-03.pem",      dest: "{{ etcd_cert_dir }}/member-etcd-03.pem",      owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 }
+  { src: "roles/certs/{{ env }}/etcd-certs/ca-key.pem",                       dest: "{{ etcd_cert_dir }}/ca-key.pem",                      owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
+  { src: "roles/certs/{{ env }}/etcd-certs/ca.pem",                           dest: "{{ etcd_cert_dir }}/ca.pem",                          owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
+  { src: "roles/certs/{{ env }}/etcd-certs/client-key.pem",                   dest: "{{ etcd_cert_dir }}/client-key.pem",                  owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
+  { src: "roles/certs/{{ env }}/etcd-certs/client.pem",                       dest: "{{ etcd_cert_dir }}/client.pem",                      owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
+  { src: "roles/certs/{{ env }}/etcd-certs/peer-{{ etcd_name }}-key.pem",     dest: "{{ etcd_cert_dir }}/peer-{{ etcd_name }}-key.pem",    owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
+  { src: "roles/certs/{{ env }}/etcd-certs/peer-{{ etcd_name }}.pem",         dest: "{{ etcd_cert_dir }}/peer-{{ etcd_name }}.pem",        owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
+  { src: "roles/certs/{{ env }}/etcd-certs/server-{{ etcd_name }}-key.pem",   dest: "{{ etcd_cert_dir }}/server-{{ etcd_name }}-key.pem",  owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 },
+  { src: "roles/certs/{{ env }}/etcd-certs/server-{{ etcd_name }}.pem",       dest: "{{ etcd_cert_dir }}/server-{{ etcd_name }}.pem",      owner: "{{ app_user }}", group: "{{ app_group }}", mode: 440 }
 ]
 
 env_vars: [
