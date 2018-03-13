@@ -17,17 +17,22 @@ ansible-playbook -i /vagrant/ansible/inventories/vagrant/vagrant.ini /vagrant/an
 
 ### deploy Traefik and a Testapplication
 
-Flannel and Traefik are deployed by default. You can use something else by editing the playbook in `roles/kubeadm/tasks/main.yml`
+You can use Flannel or Calico as your networking solution. Both are available in `/vagrant/ansible/deployments/sys/` as flannel.yml or calico.yml. Deploy them with `kubectl create -f calico.yml` or `flannel.yml`. Afterwards you can deploy whatever you want but you may want to use traffic as your reverse proxy to get access from the outside world. `k create -f traefik.yml` resides in the same folder as calico or flannel. 
 
 Check your local `/etc/hosts` file and add these lines to access the frontends:
 
 ```
-172.16.0.11     test.example.com
 172.16.0.11     traefik.example.com
+172.16.0.11		test.example.com
 ```
 
-Now open http://test.example.com and http://traefik.example.com in your webbrowser and see what you have done.
-Reload test.example.com a few times to see the loadbalancing in action.
+Now open http://traefik.example.com in your webbrowser and see what you have done.
+
+Deploying your first app is easy too:
+
+`k create -f /vagrant/ansible/deployments/webtest/webtest.yml`
+
+Open and Reload test.example.com a few times to see the servicemodel in action.
 
 ## Protips
 There is this one user called "zepp" (default-pw: bitch) which is able to interact with kubernetes. You should use this one rather than always playing with root. There are also some sweet hacks in `.bashrc` like `k-nodes`, which will give you some stats about the cluster. Define your own user in the inventories folder.
