@@ -12,8 +12,8 @@ ETCD_DATA_DIR={{ etcd_data_dir }}
 # TLS settings
 ETCD_CLIENT_CERT_AUTH="true"
 ETCD_TRUSTED_CA_FILE={{ etcd_cert_dir }}/ca.pem
-ETCD_CERT_FILE={{ etcd_cert_dir }}/member-{{ etcd_name }}.pem
-ETCD_KEY_FILE={{ etcd_cert_dir }}/member-{{ etcd_name }}-key.pem
+ETCD_CERT_FILE={{ etcd_cert_dir }}/client.pem
+ETCD_KEY_FILE={{ etcd_cert_dir }}/client-key.pem
 ETCD_PEER_TRUSTED_CA_FILE={{ etcd_cert_dir }}/ca.pem
 ETCD_PEER_CERT_FILE={{ etcd_cert_dir }}/member-{{ etcd_name }}.pem
 ETCD_PEER_KEY_FILE={{ etcd_cert_dir }}/member-{{ etcd_name }}-key.pem

@@ -9,8 +9,8 @@ etcd:
   {% endfor %}
   # TLS crap starts here
   caFile: {{ etcd_cert_dir }}/ca.pem
-  certFile: {{ etcd_cert_dir }}/member-{{ etcd_name }}.pem
-  keyFile: {{ etcd_cert_dir }}/member-{{ etcd_name }}-key.pem
+  certFile: {{ etcd_cert_dir }}/client.pem
+  keyFile: {{ etcd_cert_dir }}/client-key.pem
   dataDir: {{ etcd_data_dir }}
 networking:
   podSubnet: {{ pod_network_cidr }}
