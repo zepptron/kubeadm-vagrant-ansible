@@ -2,7 +2,7 @@
 role_name: "etcd"
 
 # ETCD vars
-etcd_version: "v3.2.13"
+etcd_version: "v3.3.2"
 etcd_arch: "amd64"
 etcd_token: "9477af68bbee1b9ae037d6fd9e7efefd"
 etcd_peer_port: "2380"

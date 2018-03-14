@@ -1,7 +1,7 @@
 - name: Download ETCD...
   when: etcd is defined
   get_url:
-    url: https://github.com/coreos/etcd/releases/download/v3.2.13/etcd-v3.2.13-linux-amd64.tar.gz
+    url: https://github.com/coreos/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-{{ etcd_arch }}.tar.gz
     dest: /tmp/etcd.tar.gz
     mode: 0440
   tags: [etcd]
