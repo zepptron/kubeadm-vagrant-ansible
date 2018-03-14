@@ -10,8 +10,8 @@ kubeadm_config_dir: "/etc/kubeadm"
 kubeadm_version: "1.9.1-00"
 kubelet_version: "1.9.1-00"
 kubectl_config: "/etc/kubernetes/admin.conf"
-pod_network_cidr: "10.244.0.0/16"
 kube_master_ip: "172.16.0.10"
+pod_network_cidr: "10.244.0.0/16"
 
 env_vars: [
   { dest: "/root/.bashrc", line: "export export no_proxy='.{{ domain }},localhost,{% for node in groups['etcd'] %}{{ node }}{% if not loop.last %},{% endif %}{% endfor %}'" }

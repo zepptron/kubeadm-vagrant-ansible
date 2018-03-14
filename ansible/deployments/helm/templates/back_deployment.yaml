@@ -20,6 +20,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.backendDeployment.name }}
+        role: {{ .Values.policy.allowlabel }}
     spec:
       containers:
       - name: {{ .Values.backendDeployment.name }}

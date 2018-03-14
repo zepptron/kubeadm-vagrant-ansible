@@ -14,11 +14,9 @@ cd /vagrant/ansible
 ansible-playbook -i inventories/vagrant/vagrant.ini vagrant-install.yml
 ```
 
-<img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
-
 ### deploy Traefik and a Testapplication
 
-You can use Flannel or Calico as your networking solution. Both are available in `/vagrant/ansible/deployments/sys/` as flannel.yml or calico.yml. Deploy them with `kubectl create -f calico.yml` or `flannel.yml`. Afterwards you can deploy whatever you want but you may want to use traefik as your reverse proxy to get access from the outside world. `k create -f traefik.yml` will solve that. It's all in the same folder. 
+You can use Calico as your networking solution. It's available in `/vagrant/ansible/deployments/sys/calico.yml`. Deploy with `kubectl create -f calico.yml`. Afterwards you can deploy whatever you want but you may want to use traefik as your reverse proxy to get access from the outside world. `k create -f traefik.yml` will solve that. It's all in the same folder. 
 
 Check your local `/etc/hosts` file and add these lines to access the frontends running inside the cluster:
 
@@ -35,8 +33,10 @@ Deploying your first app is easy too:
 
 Open and Reload test.example.com a few times to see the servicemodel in action.
 
+<img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
+
 ## Protips
-There is this one user called "zepp" (default-pw: bitch) which is able to interact with kubernetes. You should use this one rather than always playing with root. There are also some sweet hacks in `.bashrc` like `k-nodes`, which will give you some stats about the cluster. Define your own user in the inventories folder.
+There is this one user called "zepp" (default-pw: wurst) which is able to interact with kubernetes. You should use this one rather than always playing with root. There are also some sweet hacks in `.bashrc` like `k-nodes`, which will give you some stats about the cluster. Define your own user in the inventories folder.
 
 <img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/k-node.jpg?raw=true" width="400">
 
@@ -57,12 +57,11 @@ This also works for deploying stuff etc, it's just an alias.
 - add helm
 - integrate HA-features (check the branches)
 
-## Proxy
+## Proxy - DEPRECATED
 By default the proxy settings are turned off. If you need to fight with a proxy, enable and configure it in the Vagrantfile. It's defined at the top:
 ```
 $proxy = false		# true or false
 $proxy_url = "http://proxy.com:port"	# enter proxy URL here!
 ```
 
-## Be aware!
-As you might have noticed this is just the beginning. I'm trying to make it as generic as possible but I'm no ansible hero so this might take a while. The goal is to have the ability to run it on any relevant platform (ARM (Raspberry), x64 etc...). You can add your own inventory in `ansible/inventories/xx` and play around. It won't work out of the box because it's still a long way to go from here but you can fix it easily by changing some static stuff like the ethernet device or the ssh keys to your needs :)
+Proxysupport won't be tested anymore. Sorry.

@@ -9,15 +9,15 @@ labels:
 webDeployment:
   name: frontend
   dockerImage: "zepp/fintest"
-  dockerTag: "42"
-  replicas: 6
+  dockerTag: "43"
+  replicas: 3
   port: 8000
   updateType: "RollingUpdate"
   readysec: 5
   maxUnavailable: 0
   maxSurge: 3
 webService:
-  name: web1337
+  name: web-fronti
   port: 80
   portProtocol: "TCP"
   port: 80
@@ -30,7 +30,7 @@ webIngress:
 sideDeployment:
   name: sidecar
   dockerImage: "zepp/fintest"
-  dockerTag: "31"
+  dockerTag: "43"
   replicas: 3
   port: 8000
   updateType: "RollingUpdate"
@@ -38,7 +38,7 @@ sideDeployment:
   maxUnavailable: 0
   maxSurge: 3
 sideService:
-  name: sidecars
+  name: web-sidecar
   port: 80
   portProtocol: "TCP"
   port: 80
@@ -51,7 +51,7 @@ sideIngress:
 backendDeployment:
   name: backend
   dockerImage: "zepp/fintest"
-  dockerTag: "30"
+  dockerTag: "43"
   replicas: 3
   port: 8000
   updateType: "RollingUpdate"
@@ -59,7 +59,7 @@ backendDeployment:
   maxUnavailable: 0
   maxSurge: 3
 backendService:
-  name: webend
+  name: web-backi
   port: 80
   portProtocol: "TCP"
   port: 80
@@ -67,3 +67,9 @@ backendIngress:
   path: "/"
   url: "backend.example.com"
   anno: "traefik"
+
+## Policy - this rule allows no traffic from sidecar to frontend
+policy:
+  name: allow-helm
+  hitlabel: restrictme
+  allowlabel: letmein

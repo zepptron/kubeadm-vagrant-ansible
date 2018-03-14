@@ -20,6 +20,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.webDeployment.name }}
+        role: {{ .Values.policy.hitlabel }}
     spec:
       containers:
       - name: {{ .Values.webDeployment.name }}

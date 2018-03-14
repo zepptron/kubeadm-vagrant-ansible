@@ -10,7 +10,7 @@ cgroupdriver: "systemd"
 # User vars
 app_user: "zepp"
 app_group: "zepp"
-app_pw: "$6$ceYviEZw0in3j3Ii$eU7UpgAcLGsge71plDbxTxfoSlw7qqub4uC4SKt6vN5UCmX/bzGwVEWcbCoQK2nTEiNxmVqhUthxN6nERYTWG."
+app_pw: "$6$JNWb59GmBaMmF5v3$Pvhw0fetP4PrgWPc0vlAHYth/6ANbpOCWyCuNajcpu7tKL7k4Dpc6Z59CTfynVbBPhwEEcpMH7rqwTVtxLZe71"
 
 # Proxystuff
 proxy: false

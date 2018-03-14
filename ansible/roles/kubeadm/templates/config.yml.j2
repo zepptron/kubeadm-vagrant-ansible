@@ -21,5 +21,7 @@ controllerManagerExtraArgs:
   node-monitor-grace-period: 6s
   service-sync-period: 2s
   deployment-controller-sync-period: 2s
+  allocate-node-cidrs: "false"
+  service-cluster-ip-range: "10.11.12.0/24"
 apiServerExtraArgs:
   feature-gates: PersistentLocalVolumes=true
