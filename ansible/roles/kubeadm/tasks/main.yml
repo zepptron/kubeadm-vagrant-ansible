@@ -143,12 +143,12 @@
       }
   tags: [kubeadm]
 
-#- name: Starting Flannel...
-#  when: master is defined
-#  shell: "kubectl create -f /vagrant/ansible/deployments/sys/flannel.yml"
-#  tags: [kubeadm]
-#
-#- name: Starting Traefik...
-#  when: master is defined
-#  shell: "kubectl create -f /vagrant/ansible/deployments/sys/traefik.yml"
-#  tags: [kubeadm]
+- name: Starting Calico...
+  when: master is defined
+  shell: "kubectl create -f /vagrant/ansible/deployments/sys/calico.yml"
+  tags: [kubeadm]
+
+- name: Starting Traefik...
+  when: master is defined
+  shell: "kubectl create -f /vagrant/ansible/deployments/sys/traefik.yml"
+  tags: [kubeadm]
