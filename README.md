@@ -33,6 +33,17 @@ Deploying your first app is easy too:
 
 Open and Reload test.example.com a few times to see the servicemodel in action.
 
+### use helm
+
+package your applications with helm to deploy and update/rollback them easily. 
+
+```
+cd /vagrant/ansible/deployments/helm
+helm install --name xxx .
+```
+
+There is also a policy deployed which rejects any connections from sidecars to frontends. 
+
 <img src="https://github.com/zepptron/kubeadm-vagrant-ansible/blob/master/temp/vag.jpg?raw=true" width="800">
 
 ## Protips
