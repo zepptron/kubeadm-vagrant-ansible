@@ -146,7 +146,3 @@
 - name: Starting Calico...
   when: master is defined
   shell: "kubectl create -f /vagrant/ansible/deployments/sys/calico.yml"
-
-#- name: Starting Traefik...
-#  when: master is defined
-#  shell: "kubectl create -f /vagrant/ansible/deployments/sys/traefik.yml"
