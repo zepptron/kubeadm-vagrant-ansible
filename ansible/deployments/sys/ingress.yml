@@ -1,15 +1,8 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: ingress
-
----
-
-apiVersion: v1
 kind: Service
 metadata:
   name: default-http-backend
-  namespace: ingress
+  namespace: kube-system
   labels:
     app: default-http-backend
 spec:
@@ -25,7 +18,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ingress-nginx
-  namespace: ingress
+  namespace: kube-system
 spec:
   type: ClusterIP
   ports:
@@ -48,7 +41,7 @@ metadata:
   name: default-http-backend
   labels:
     app: default-http-backend
-  namespace: ingress
+  namespace: kube-system
 spec:
   replicas: 1
   selector:
@@ -83,14 +76,12 @@ spec:
             cpu: 10m
             memory: 20Mi
 ---
-# We have to use a Daemonset and 'hostNetwork' because of this CNI issue: 
-# https://github.com/kubernetes/kubernetes/issues/31307
 
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: nginx-ingress-controller
-  namespace: ingress 
+  namespace: kube-system
 spec:
   selector:
     matchLabels:
@@ -111,7 +102,6 @@ spec:
             - --configmap=$(POD_NAMESPACE)/nginx-configuration
             - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
             - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
-            - --alsologtostderr
             - --annotations-prefix=ingress.kubernetes.io
           env:
             - name: POD_NAME
@@ -153,7 +143,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: nginx-configuration
-  namespace: ingress
+  namespace: kube-system
   labels:
     app: ingress-nginx
 
@@ -163,7 +153,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: tcp-services
-  namespace: ingress
+  namespace: kube-system
 
 ---
 
@@ -171,7 +161,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: udp-services
-  namespace: ingress
+  namespace: kube-system
 
 ---
 
@@ -179,7 +169,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nginx-ingress-serviceaccount
-  namespace: ingress
+  namespace: kube-system
 
 ---
 
@@ -241,7 +231,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: nginx-ingress-role
-  namespace: ingress
+  namespace: kube-system
 rules:
   - apiGroups:
       - ""
@@ -284,7 +274,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: nginx-ingress-role-nisa-binding
-  namespace: ingress
+  namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -292,7 +282,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nginx-ingress-serviceaccount
-    namespace: ingress
+    namespace: kube-system
 
 ---
 
@@ -307,4 +297,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nginx-ingress-serviceaccount
-    namespace: ingress
+    namespace: kube-system
