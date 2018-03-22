@@ -2,3 +2,4 @@
 .vagrant
 **/*.retry
 **/*.log
+ansible/deployments/jenkins-x/*
